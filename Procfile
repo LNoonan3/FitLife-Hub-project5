@@ -1,0 +1,1 @@
+web: gunicorn fitlife_hub.wsgi
