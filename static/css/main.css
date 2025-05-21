@@ -1,0 +1,62 @@
+/* Custom theme overrides */
+
+/* Body background and font */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #343a40;
+}
+
+/* Navbar brand color */
+.navbar-brand {
+  font-weight: bold;
+  color: #007bff !important;
+}
+
+/* Card shadows */
+.card {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Footer */
+footer {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Form field spacing */
+form .form-group {
+  margin-bottom: 1rem;
+}
+
+/* Make images responsive */
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Spinner alignment */
+#loading-spinner {
+  margin-left: 0.5rem;
+}
+
+/* Utility: center content vertically */
+.v-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
