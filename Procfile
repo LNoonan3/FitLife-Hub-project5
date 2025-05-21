@@ -1,1 +1,1 @@
-web: gunicorn fitlife_hub.wsgi
+web: gunicorn fitlife_hub.wsgi:application

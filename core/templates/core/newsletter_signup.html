@@ -1,0 +1,7 @@
+<form method="post" action="{% url 'core:newsletter_subscribe' %}">
+  {% csrf_token %}
+  <div class="input-group">
+    <input type="email" name="email" class="form-control" placeholder="Your email" required>
+    <button class="btn btn-outline-primary" type="submit">Subscribe</button>
+  </div>
+</form>

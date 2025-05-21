@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Home – FitLife Hub{% endblock %}
+{% block content %}
+<div class="jumbotron p-5 bg-light rounded-3">
+  <h1 class="display-5">Welcome to FitLife Hub</h1>
+  <p class="lead">Join our community, subscribe to expert plans, and shop premium fitness gear.</p>
+  <hr class="my-4">
+  <a class="btn btn-primary btn-lg" href="{% url 'subscriptions:plan_list' %}">View Plans</a>
+  <a class="btn btn-outline-secondary btn-lg" href="{% url 'store:product_list' %}">Shop Products</a>
+</div>
+{% endblock %}

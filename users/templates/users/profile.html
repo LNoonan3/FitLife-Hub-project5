@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile – {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-4">
+    <h3>{{ user.username }}’s Profile</h3>
+    {% if user.profile.avatar_url %}
+      <img src="{{ user.profile.avatar_url }}" class="img-fluid rounded-circle mb-3" alt="Avatar">
+    {% endif %}
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
+    <p><strong>Fitness Goal:</strong> {{ user.profile.fitness_goal|default:"Not specified." }}</p>
+    <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary">Edit Profile</a>
+  </div>
+</div>
+{% endblock %}

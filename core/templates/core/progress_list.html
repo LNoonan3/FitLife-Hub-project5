@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Community Updates{% endblock %}
+{% block content %}
+<h2>Community Progress</h2>
+{% for update in updates %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5>{{ update.title }} <small class="text-muted">by {{ update.user.username }}</small></h5>
+      <p>{{ update.content }}</p>
+      {% if update.image %}<img src="{{ update.image.url }}" class="img-fluid mt-2">{% endif %}
+    </div>
+  </div>
+{% empty %}
+  <p>No updates yet. <a href="{% url 'core:progress_create' %}">Share your first update!</a></p>
+{% endfor %}
+{% endblock %}

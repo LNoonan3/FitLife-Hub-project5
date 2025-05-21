@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} – FitLife Hub{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    <h2>{{ product.name }}</h2>
+    <p>{{ product.description }}</p>
+    <h4>${{ product.price_cents|floatformat:2 }}</h4>
+    <button class="btn btn-success" id="add-to-cart-btn">Add to Cart</button>
+    <!-- Cart AJAX script -->
+    <script>
+      document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+        fetch("{% url 'store:cart_add' product.pk %}", { method: 'POST', headers: {'X-CSRFToken':'{{ csrf_token }}'} })
+          .then(res => res.json())
+          .then(data => alert(data.message))
+      });
+    </script>
+  </div>
+</div>
+
+<hr>
+
+<h3>Reviews</h3>
+{% for review in product.reviews.all %}
+  <div class="mb-3">
+    <strong>{{ review.user.username }}</strong> – {{ review.rating }}/5<br>
+    <p>{{ review.comment }}</p>
+  </div>
+{% empty %}
+  <p>No reviews yet.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+<h4>Submit a Review</h4>
+<form method="post">
+  {% csrf_token %}
+  {{ review_form.as_p }}
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% else %}
+  <p><a href="{% url 'login' %}">Log in</a> to post a review.</p>
+{% endif %}
+{% endblock %}
