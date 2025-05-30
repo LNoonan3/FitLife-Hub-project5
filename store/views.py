@@ -1,9 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
+import stripe
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django.shortcuts import redirect, render, get_object_or_404
+from .models import Product, Order, OrderItem
 from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from .models import Product, Order, OrderItem
 from .forms import ReviewForm
+from django.contrib.auth.models import User
 
 
 def product_list(request):
@@ -92,3 +97,65 @@ def checkout_view(request):
     request.session['cart'] = {}
 
     return render(request, 'store/checkout_success.html', {'order': order})
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+@login_required
+def oneoff_checkout(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        customer_email=request.user.email,
+        line_items=[{
+          'price_data': {
+            'currency': 'usd',
+            'product_data': {'name': product.name},
+            'unit_amount': product.price_cents,
+          },
+          'quantity': 1,
+        }],
+        mode='payment',
+        success_url=request.build_absolute_uri(
+          reverse('store:checkout_success')
+        ),
+        cancel_url=request.build_absolute_uri(
+          reverse('store:checkout_cancel')
+        ),
+        metadata={'product_id': product.id}
+    )
+    return redirect(session.url, code=303)
+
+
+@login_required
+def checkout_success(request):
+    return render(request, 'store/checkout_success.html')
+
+
+@login_required
+def checkout_cancel(request):
+    return render(request, 'store/checkout_cancel.html')
+
+
+@csrf_exempt
+def oneoff_webhook(request):
+    payload, sig = request.body, request.META.get('HTTP_STRIPE_SIGNATURE')
+    try:
+        event = stripe.Webhook.construct_event(
+          payload, sig, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except Exception:
+        return HttpResponse(status=400)
+
+    if event['type']=='checkout.session.completed':
+        sess = event['data']['object']
+        user = User.objects.get(email=sess['customer_details']['email'])
+        prod = Product.objects.get(pk=sess['metadata']['product_id'])
+        order = Order.objects.create(
+          user=user, total_cents=prod.price_cents, status='paid'
+        )
+        OrderItem.objects.create(
+          order=order, product=prod, quantity=1, unit_price=prod.price_cents
+        )
+    return HttpResponse(status=200)

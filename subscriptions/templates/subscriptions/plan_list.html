@@ -1,24 +1,29 @@
-{% extends 'base.html' %}
-{% block title %}Plans – FitLife Hub{% endblock %}
-{% block content %}
+{% extends 'base.html' %} {% block title %}Plans – FitLife Hub{% endblock %} {%block content %}
 <h2>Subscription Plans</h2>
 <div class="row">
   {% for plan in plans %}
-    <div class="col-md-4 mb-4">
-      <div class="card h-100">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">{{ plan.name }}</h5>
-          <p class="card-text">{{ plan.description }}</p>
-          <h6>${{ plan.price_cents|floatformat:2 }} / {{ plan.interval }}</h6>
-          <form action="{% url 'subscriptions:subscribe_plan' plan.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary mt-auto">Subscribe</button>
-          </form>
-        </div>
+  <div class="col-md-4 mb-4">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ plan.name }}</h5>
+        <p class="card-text">{{ plan.description }}</p>
+        <h6>${{ plan.price_cents|floatformat:2 }} / {{ plan.interval }}</h6>
+        <form
+          action="{% url 'subscriptions:subscribe_plan' plan.id %}"
+          method="post"
+          class="d-inline with-spinner"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">
+            Subscribe — ${{ plan.price_cents|floatformat:2 }}/{{ plan.interval
+            }}
+          </button>
+        </form>
       </div>
     </div>
+  </div>
   {% empty %}
-    <p>No subscription plans available.</p>
+  <p>No subscription plans available.</p>
   {% endfor %}
 </div>
 {% endblock %}

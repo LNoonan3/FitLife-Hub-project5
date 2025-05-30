@@ -37,10 +37,11 @@
 
 {% if user.is_authenticated %}
 <h4>Submit a Review</h4>
-<form method="post">
+<form action="{% url 'store:oneoff_checkout' product.pk %}" method="post" class="with-spinner">
   {% csrf_token %}
-  {{ review_form.as_p }}
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button type="submit" class="btn btn-success">
+    Buy Now – ${{ product.price_cents|floatformat:2 }}
+  </button>
 </form>
 {% else %}
   <p><a href="{% url 'login' %}">Log in</a> to post a review.</p>

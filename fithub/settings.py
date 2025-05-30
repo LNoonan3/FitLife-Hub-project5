@@ -87,6 +87,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'fithub.context_processors.stripe_keys',
+
             ],
             'builtins': [
                 'crispy_forms.templatetags.crispy_forms_tags',

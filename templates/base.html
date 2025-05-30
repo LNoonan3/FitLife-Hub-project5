@@ -76,5 +76,8 @@
     crossorigin="anonymous"
   ></script>
   <script src="{% static 'js/main.js' %}"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");</script>
+
 </body>
 </html>

@@ -10,5 +10,10 @@ urlpatterns = [
     path('cart/', views.cart_view, name='cart'),
     path('cart/add/<int:pk>/', views.add_to_cart, name='cart_add'),
     path('checkout/', views.checkout_view, name='checkout'),
+    path('checkout/oneoff/<int:pk>/', views.oneoff_checkout, name='oneoff_checkout'),
+    path('checkout/success/',   views.checkout_success, name='checkout_success'),
+    path('checkout/cancel/',    views.checkout_cancel,  name='checkout_cancel'),
+    path('webhook/oneoff/',     views.oneoff_webhook,   name='oneoff_webhook'),
+
 
 ]
