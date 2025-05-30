@@ -39,10 +39,10 @@
           <li class="nav-item"><a class="nav-link" href="{% url 'core:progress_list' %}">Community</a></li>
           {% if user.is_authenticated %}
             <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">{{ user.username }}</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Logout</a></li>
           {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:signup' %}">Sign Up</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}">Login</a></li>
           {% endif %}
         </ul>
       </div>
