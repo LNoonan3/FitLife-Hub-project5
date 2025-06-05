@@ -37,5 +37,122 @@
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
+  },
+  {
+    "model": "store.product",
+    "pk": 4,
+    "fields": {
+      "name": "Kettlebell 12kg",
+      "description": "Durable cast iron kettlebell for dynamic workouts.",
+      "price": "34.99",
+      "stock": 25,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 5,
+    "fields": {
+      "name": "Foam Roller",
+      "description": "Textured foam roller for muscle recovery and massage.",
+      "price": "19.99",
+      "stock": 40,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 6,
+    "fields": {
+      "name": "Skipping Rope",
+      "description": "Adjustable speed skipping rope for cardio workouts.",
+      "price": "9.99",
+      "stock": 75,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 7,
+    "fields": {
+      "name": "Fitness Tracker",
+      "description": "Track your steps, heart rate, and calories burned.",
+      "price": "49.99",
+      "stock": 20,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 8,
+    "fields": {
+      "name": "Gym Bag",
+      "description": "Spacious and stylish gym bag with multiple compartments.",
+      "price": "29.99",
+      "stock": 35,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 9,
+    "fields": {
+      "name": "Water Bottle",
+      "description": "1L BPA-free water bottle with time marker.",
+      "price": "12.99",
+      "stock": 60,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 10,
+    "fields": {
+      "name": "Push-Up Bars",
+      "description": "Non-slip push-up bars for upper body workouts.",
+      "price": "17.99",
+      "stock": 45,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+  "model": "store.product",
+  "pk": 11,
+  "fields": {
+    "name": "Adjustable Weight Bench",
+    "description": "Multi-position bench for a variety of strength exercises.",
+    "price": "89.99",
+    "stock": 15,
+    "image": "",
+    "created_at": "2025-06-01T10:00:00Z",
+    "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 12,
+    "fields": {
+      "name": "Pull-Up Bar",
+      "description": "Doorway pull-up bar for upper body and core workouts.",
+      "price": "27.99",
+      "stock": 25,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
   }
 ]
