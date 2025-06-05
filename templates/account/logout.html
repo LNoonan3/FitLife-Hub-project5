@@ -1,25 +1,21 @@
-{% extends "account/base_manage.html" %}
+{% extends "base.html" %}
 {% load allauth i18n %}
-{% block head_title %}
-    {% trans "Sign Out" %}
-{% endblock head_title %}
+{% block title %}Sign Out – FitLife Hub{% endblock %}
 {% block content %}
-    {% element h1 %}
-        {% trans "Sign Out" %}
-    {% endelement %}
-    {% element p %}
-        {% trans 'Are you sure you want to sign out?' %}
-    {% endelement %}
-    {% url 'account_logout' as action_url %}
-    {% element form method="post" action=action_url no_visible_fields=True %}
-        {% slot body %}
-            {% csrf_token %}
-            {{ redirect_field }}
-        {% endslot %}
-        {% slot actions %}
-            {% element button type="submit" %}
-                {% trans 'Sign Out' %}
-            {% endelement %}
-        {% endslot %}
-    {% endelement %}
-{% endblock content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm border-0 mt-5">
+      <div class="card-body p-4 text-center">
+        <h2 class="mb-3">{% trans "Sign Out" %}</h2>
+        <p>{% trans 'Are you sure you want to sign out?' %}</p>
+        <form method="post" action="{% url 'account_logout' %}">
+          {% csrf_token %}
+          {{ redirect_field }}
+          <button type="submit" class="btn btn-danger w-100">{% trans 'Sign Out' %}</button>
+        </form>
+        <a href="{% url 'account_login' %}" class="btn btn-link mt-3">{% trans "Back to login" %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
