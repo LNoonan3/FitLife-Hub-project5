@@ -7,35 +7,121 @@ body {
   color: #343a40;
 }
 
-/* Navbar brand color */
+/* Navbar */
+.navbar {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  background: #fff;
+}
 .navbar-brand {
-  font-weight: bold;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+.nav-link {
+  font-weight: 500;
+  color: #343a40 !important;
+  transition: color 0.2s;
+}
+.nav-link:hover, .nav-link.active {
   color: #007bff !important;
 }
 
-/* Card shadows */
+/* Hero Section */
+.hero {
+  background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+  color: #fff;
+  padding: 3rem 1rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+.hero p {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Cards */
 .card {
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.card-text {
+  color: #555;
 }
 
 /* Buttons */
+.btn-success, .btn-primary {
+  border-radius: 2rem;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  font-size: 1.1rem;
+}
+.btn-success {
+  background: linear-gradient(90deg, #28a745 0%, #00c851 100%);
+  border: none;
+}
+.btn-success:hover {
+  background: linear-gradient(90deg, #218838 0%, #009e43 100%);
+}
 .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
+  background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+  border: none;
 }
 .btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
+  background: linear-gradient(90deg, #0056b3 0%, #007bff 100%);
+}
+
+/* Tables */
+.table th, .table td {
+  vertical-align: middle;
+}
+.table thead th {
+  background: #f1f3f6;
+  font-weight: 600;
+}
+
+/* Forms */
+input, select, textarea {
+  border-radius: 0.5rem !important;
+  border: 1px solid #ced4da !important;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #007bff !important;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.15) !important;
+}
+
+/* Alerts */
+.alert {
+  border-radius: 0.5rem;
+  font-size: 1.05rem;
 }
 
 /* Footer */
 footer {
-  font-size: 0.9rem;
+  background: #fff;
+  border-top: 1px solid #e9ecef;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
   color: #6c757d;
+}
+
+/* Profile Avatar */
+.rounded-circle {
+  border: 3px solid #007bff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 /* Form field spacing */
@@ -59,4 +145,36 @@ form .form-group {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.mt-4 { margin-top: 2rem !important; }
+.mb-4 { margin-bottom: 2rem !important; }
+.py-4 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+
+/* Custom scroll-to-top button (if you add one) */
+#scroll-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  display: none;
+  background: #007bff;
+  color: #fff;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: none;
+  transition: background 0.2s;
+}
+#scroll-to-top:hover {
+  background: #0056b3;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2rem; }
+  .card-title { font-size: 1.1rem; }
 }
