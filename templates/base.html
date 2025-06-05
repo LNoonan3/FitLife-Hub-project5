@@ -37,6 +37,7 @@
           <li class="nav-item"><a class="nav-link" href="{% url 'store:product_list' %}">Products</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'subscriptions:plan_list' %}">Plans</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'core:progress_list' %}">Community</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'store:cart' %}">Cart</a></li>
           {% if user.is_authenticated %}
             <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">{{ user.username }}</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Logout</a></li>

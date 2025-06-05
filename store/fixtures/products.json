@@ -1,0 +1,41 @@
+[
+  {
+    "model": "store.product",
+    "pk": 1,
+    "fields": {
+      "name": "Yoga Mat",
+      "description": "High-quality non-slip yoga mat for all fitness levels.",
+      "price": "24.99",
+      "stock": 50,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 2,
+    "fields": {
+      "name": "Dumbbell Set",
+      "description": "Adjustable dumbbell set, perfect for home workouts.",
+      "price": "59.99",
+      "stock": 30,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "store.product",
+    "pk": 3,
+    "fields": {
+      "name": "Resistance Bands",
+      "description": "Set of 5 resistance bands for strength training.",
+      "price": "14.99",
+      "stock": 100,
+      "image": "",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  }
+]

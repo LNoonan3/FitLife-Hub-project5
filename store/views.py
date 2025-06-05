@@ -45,7 +45,7 @@ def cart_view(request):
     total = 0
     for prod_id, qty in cart.items():
         product = get_object_or_404(Product, pk=prod_id)
-        line_total = product.price_cents * qty
+        line_total = product.price * qty
         items.append({
             'product': product,
             'quantity': qty,
@@ -81,12 +81,12 @@ def checkout_view(request):
     order = Order.objects.create(user=request.user, total_cents=0)
     for prod_id, qty in cart.items():
         product = get_object_or_404(Product, pk=prod_id)
-        line_total = product.price_cents * qty
+        line_total = product.price * qty
         OrderItem.objects.create(
             order=order,
             product=product,
             quantity=qty,
-            unit_price=product.price_cents
+            unit_price=product.price,
         )
         total += line_total
     order.total_cents = total
@@ -103,6 +103,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 @login_required
+@login_required
 def oneoff_checkout(request, pk):
     product = get_object_or_404(Product, pk=pk)
     session = stripe.checkout.Session.create(
@@ -110,9 +111,9 @@ def oneoff_checkout(request, pk):
         customer_email=request.user.email,
         line_items=[{
           'price_data': {
-            'currency': 'usd',
+            'currency': 'eur',
             'product_data': {'name': product.name},
-            'unit_amount': product.price_cents,
+            'unit_amount': int(product.price * 100),
           },
           'quantity': 1,
         }],

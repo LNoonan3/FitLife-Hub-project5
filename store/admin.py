@@ -4,7 +4,7 @@ from .models import Product, Order, OrderItem, Review
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price_cents', 'stock')
+    list_display = ('name', 'price', 'stock')
     search_fields = ('name',)
 
 

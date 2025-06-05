@@ -7,7 +7,7 @@
       <div class="card-body d-flex flex-column">
         <h5 class="card-title">{{ plan.name }}</h5>
         <p class="card-text">{{ plan.description }}</p>
-        <h6>${{ plan.price_cents|floatformat:2 }} / {{ plan.interval }}</h6>
+        <h6>€{{ plan.price|floatformat:2 }} / {{ plan.interval }}</h6>
         <form
           action="{% url 'subscriptions:subscribe_plan' plan.id %}"
           method="post"
@@ -15,8 +15,7 @@
         >
           {% csrf_token %}
           <button type="submit" class="btn btn-primary">
-            Subscribe — ${{ plan.price_cents|floatformat:2 }}/{{ plan.interval
-            }}
+            Subscribe — €{{ plan.price|floatformat:2 }}/{{ plan.interval }}
           </button>
         </form>
       </div>

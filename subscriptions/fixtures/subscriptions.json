@@ -1,0 +1,28 @@
+[
+  {
+    "model": "subscriptions.plan",
+    "pk": 1,
+    "fields": {
+      "name": "Monthly Membership",
+      "description": "Unlimited access to all online classes and resources.",
+      "price": "19.99",
+      "interval": "monthly",
+      "is_active": true,
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "subscriptions.plan",
+    "pk": 2,
+    "fields": {
+      "name": "Yearly Membership",
+      "description": "Best value! Unlimited access for a full year.",
+      "price": "199.99",
+      "interval": "yearly",
+      "is_active": true,
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-01T10:00:00Z"
+    }
+  }
+]

@@ -10,7 +10,7 @@
   <div class="col-md-6">
     <h2>{{ product.name }}</h2>
     <p>{{ product.description }}</p>
-    <h4>${{ product.price_cents|floatformat:2 }}</h4>
+    <h4>€{{ product.price|floatformat:2 }}</h4>
     <button class="btn btn-success" id="add-to-cart-btn">Add to Cart</button>
     <!-- Cart AJAX script -->
     <script>
