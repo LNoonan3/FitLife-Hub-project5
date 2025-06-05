@@ -4,7 +4,7 @@ from .models import Plan, Subscription
 
 @admin.register(Plan)
 class PlanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price_cents', 'interval', 'is_active')
+    list_display = ('name', 'price', 'interval', 'is_active')
 
 
 @admin.register(Subscription)

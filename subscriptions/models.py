@@ -6,7 +6,7 @@ class Plan(models.Model):
     INTERVAL_CHOICES = [('monthly', 'Monthly'), ('yearly', 'Yearly')]
     name = models.CharField(max_length=100)
     description = models.TextField()
-    price_cents = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     interval = models.CharField(max_length=10, choices=INTERVAL_CHOICES)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
