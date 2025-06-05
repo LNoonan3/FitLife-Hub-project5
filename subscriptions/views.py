@@ -28,7 +28,7 @@ def subscribe_plan(request, plan_id):
             'price_data': {
                 'currency': 'usd',
                 'product_data': {'name': plan.name},
-                'unit_amount': plan.price_cents,
+                'unit_amount': int(plan.price * 100)
             },
             'quantity': 1,
         }],
