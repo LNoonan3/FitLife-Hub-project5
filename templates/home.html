@@ -8,4 +8,66 @@
   <a class="btn btn-primary btn-lg" href="{% url 'subscriptions:plan_list' %}">View Plans</a>
   <a class="btn btn-outline-secondary btn-lg" href="{% url 'store:product_list' %}">Shop Products</a>
 </div>
+
+<!-- Features Section -->
+<section class="py-4">
+  <div class="row text-center">
+    <div class="col-md-4 mb-3">
+      <a href="{% url 'subscriptions:plan_list' %}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm hover-shadow">
+          <div class="card-body">
+            <h4 class="card-title">Expert Plans</h4>
+            <p class="card-text">Choose from a variety of workout and nutrition plans designed by certified trainers.</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4 mb-3">
+      <a href="{% url 'store:product_list' %}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm hover-shadow">
+          <div class="card-body">
+            <h4 class="card-title">Premium Gear</h4>
+            <p class="card-text">Shop high-quality fitness equipment and apparel to support your journey.</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4 mb-3">
+      <a href="{% url 'core:progress_list' %}" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm hover-shadow">
+          <div class="card-body">
+            <h4 class="card-title">Community Support</h4>
+            <p class="card-text">Share your progress and get motivated by our supportive fitness community.</p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-4">
+  <h3 class="text-center mb-4">What Our Members Say</h3>
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <blockquote class="blockquote">
+        <p>"FitLife Hub helped me stay consistent and reach my fitness goals!"</p>
+        <footer class="blockquote-footer">Alex, Dublin</footer>
+      </blockquote>
+    </div>
+    <div class="col-md-4">
+      <blockquote class="blockquote">
+        <p>"The plans are easy to follow and the community is so motivating."</p>
+        <footer class="blockquote-footer">Sam, Cork</footer>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Signup -->
+<section class="py-4 text-center">
+  <h4>Stay Updated!</h4>
+  <p>Subscribe to our newsletter for tips, offers, and community news.</p>
+  {% include "core/newsletter_signup.html" %}
+</section>
 {% endblock %}
