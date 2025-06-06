@@ -1,0 +1,38 @@
+[
+  {
+    "model": "core.progressupdate",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "title": "First 5K Run!",
+      "content": "I just completed my first 5K run thanks to the FitLife Hub training plan!",
+      "image": "",
+      "created_at": "2025-06-01T09:00:00Z",
+      "updated_at": "2025-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "core.progressupdate",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "title": "Lost 3kg in a Month",
+      "content": "Feeling healthier and more energetic every day. The community support is amazing!",
+      "image": "",
+      "created_at": "2025-06-03T15:30:00Z",
+      "updated_at": "2025-06-03T15:30:00Z"
+    }
+  },
+  {
+    "model": "core.progressupdate",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "title": "Meal Prep Success",
+      "content": "Tried the new meal prep guide and it made my week so much easier.",
+      "image": "",
+      "created_at": "2025-06-05T18:45:00Z",
+      "updated_at": "2025-06-05T18:45:00Z"
+    }
+  }
+]
