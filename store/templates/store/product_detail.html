@@ -18,7 +18,6 @@
       </button>
     </form>
     <button class="btn btn-success" id="add-to-cart-btn">Add to Cart</button>
-    <!-- Cart AJAX script -->
     <script>
       document.getElementById('add-to-cart-btn').addEventListener('click', () => {
         fetch("{% url 'store:cart_add' product.pk %}", { method: 'POST', headers: {'X-CSRFToken':'{{ csrf_token }}'} })
@@ -32,9 +31,18 @@
 <hr>
 
 <h3>Reviews</h3>
-{% for review in product.reviews.all %}
+{% for review in reviews %}
   <div class="mb-3">
-    <strong>{{ review.user.username }}</strong> – {{ review.rating }}/5<br>
+    <strong>{{ review.user.username }}</strong>
+    –
+    {% for i in "12345"|make_list %}
+      {% if forloop.counter <= review.rating %}
+        <span class="text-warning">&#9733;</span>
+      {% else %}
+        <span class="text-secondary">&#9734;</span>
+      {% endif %}
+    {% endfor %}
+    <br>
     <p>{{ review.comment }}</p>
   </div>
 {% empty %}
@@ -42,8 +50,17 @@
 {% endfor %}
 
 {% if user.is_authenticated %}
-<h4>Submit a Review</h4>
+  {% if can_review %}
+    <h4>Submit a Review</h4>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+  {% else %}
+    <p class="text-muted">You can only review this product if you have purchased it.</p>
+  {% endif %}
 {% else %}
-  <p><a href="{% url 'login' %}">Log in</a> to post a review.</p>
+  <p><a href="{% url 'account_login' %}">Log in</a> to post a review.</p>
 {% endif %}
 {% endblock %}

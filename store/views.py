@@ -3,7 +3,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from .models import Product, Order, OrderItem
+from .models import Product, Order, OrderItem, Review
 from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -19,22 +19,30 @@ def product_list(request):
 
 
 def product_detail(request, pk):
-    """Show a single product, its reviews, and allow posting a review."""
     product = get_object_or_404(Product, pk=pk)
-    reviews = product.reviews.all().order_by('-created_at')
-    form = ReviewForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        if not request.user.is_authenticated:
-            return redirect('login')
-        review = form.save(commit=False)
-        review.user = request.user
-        review.product = product
-        review.save()
-        return redirect('store:product_detail', pk=pk)
+    reviews = product.reviews.all()
+    can_review = False
+    if request.user.is_authenticated:
+        can_review = OrderItem.objects.filter(
+            order__user=request.user,
+            product=product,
+            order__status='completed'
+        ).exists()
+    if request.method == 'POST' and can_review:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.product = product
+            review.save()
+            return redirect('store:product_detail', pk=product.pk)
+    else:
+        form = ReviewForm()
     return render(request, 'store/product_detail.html', {
         'product': product,
         'reviews': reviews,
-        'review_form': form,
+        'form': form,
+        'can_review': can_review,
     })
 
 
