@@ -14,6 +14,8 @@ urlpatterns = [
     path('checkout/success/',   views.checkout_success, name='checkout_success'),
     path('checkout/cancel/',    views.checkout_cancel,  name='checkout_cancel'),
     path('webhook/oneoff/',     views.oneoff_webhook,   name='oneoff_webhook'),
+    path('cart/update/<int:pk>/', views.cart_update, name='cart_update'),
+    path('cart/remove/<int:pk>/', views.cart_remove, name='cart_remove'),
 
 
 ]

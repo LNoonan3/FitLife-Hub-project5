@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm
 from django.contrib.auth.models import User
+from django.views.decorators.http import require_POST
 
 
 def product_list(request):
@@ -64,6 +65,30 @@ def add_to_cart(request, pk):
         request.session['cart'] = cart
         return JsonResponse({'message': 'Added to cart!'}, status=200)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@login_required
+@require_POST
+def cart_update(request, pk):
+    """Update the quantity of a product in the cart."""
+    cart = request.session.get('cart', {})
+    quantity = int(request.POST.get('quantity', 1))
+    if quantity > 0:
+        cart[str(pk)] = quantity
+    else:
+        cart.pop(str(pk), None)
+    request.session['cart'] = cart
+    return redirect('store:cart')
+
+
+@login_required
+@require_POST
+def cart_remove(request, pk):
+    """Remove a product from the cart."""
+    cart = request.session.get('cart', {})
+    cart.pop(str(pk), None)
+    request.session['cart'] = cart
+    return redirect('store:cart')
 
 
 @login_required
