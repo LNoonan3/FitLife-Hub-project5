@@ -27,7 +27,7 @@ def product_detail(request, pk):
         can_review = OrderItem.objects.filter(
             order__user=request.user,
             product=product,
-            order__status='completed'
+            order__status='paid'
         ).exists()
     if request.method == 'POST' and can_review:
         form = ReviewForm(request.POST)
@@ -204,16 +204,16 @@ def oneoff_webhook(request):
             cart = ast.literal_eval(cart_str)
             user = User.objects.get(id=user_id)
             total = 0
-            order = Order.objects.create(user=user, total_cents=0, status='paid')
             for prod_id, qty in cart.items():
                 product = Product.objects.get(pk=prod_id)
                 line_total = product.price * qty
+                total += line_total
+            order = Order.objects.create(user=user, total_cents=int(total * 100), status='paid')
+            for prod_id, qty in cart.items():
+                product = Product.objects.get(pk=prod_id)
                 OrderItem.objects.create(
                     order=order, product=product, quantity=qty, unit_price=product.price
                 )
-                total += line_total
-            order.total_cents = int(total * 100)
-            order.save()
         else:
             product_id = sess['metadata'].get('product_id')
             user = User.objects.get(id=user_id)
@@ -222,6 +222,9 @@ def oneoff_webhook(request):
                 user=user, total_cents=int(product.price * 100), status='paid'
             )
             OrderItem.objects.create(
-                order=order, product=product, quantity=1, unit_price=product.price
+                order=order,
+                product=product,
+                quantity=1,
+                unit_price=product.price
             )
     return HttpResponse(status=200)
