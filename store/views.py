@@ -1,4 +1,5 @@
 import stripe
+import ast
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
@@ -101,41 +102,52 @@ def cart_remove(request, pk):
 
 @login_required
 def checkout_view(request):
-    """
-    Create an Order from session cart and render a confirmation page.
-    (For Pass grade, you can skip real payments here or integrate Stripe.)
-    """
     cart = request.session.get('cart', {})
     if not cart:
         return redirect('store:product_list')
 
-    # Create order
+    items = []
+    line_items = []
     total = 0
-    order = Order.objects.create(user=request.user, total_cents=0)
     for prod_id, qty in cart.items():
         product = get_object_or_404(Product, pk=prod_id)
         line_total = product.price * qty
-        OrderItem.objects.create(
-            order=order,
-            product=product,
-            quantity=qty,
-            unit_price=product.price,
-        )
+        items.append({
+            'product': product,
+            'quantity': qty,
+            'line_total': line_total,
+        })
         total += line_total
-    order.total_cents = total
-    order.status = 'paid'
-    order.save()
+        line_items.append({
+            'price_data': {
+                'currency': 'eur',
+                'product_data': {'name': product.name},
+                'unit_amount': int(product.price * 100),
+            },
+            'quantity': qty,
+        })
 
-    # Clear cart
-    request.session['cart'] = {}
+    if request.method == 'POST':
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            customer_email=request.user.email,
+            line_items=line_items,
+            mode='payment',
+            success_url=request.build_absolute_uri(reverse('store:checkout_success')),
+            cancel_url=request.build_absolute_uri(reverse('store:checkout_cancel')),
+            metadata={'user_id': request.user.id, 'cart': str(cart)},
+        )
+        return redirect(session.url, code=303)
 
-    return render(request, 'store/checkout_success.html', {'order': order})
+    return render(request, 'store/checkout.html', {
+        'items': items,
+        'total': total,
+    })
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-@login_required
 @login_required
 def oneoff_checkout(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -143,27 +155,28 @@ def oneoff_checkout(request, pk):
         payment_method_types=['card'],
         customer_email=request.user.email,
         line_items=[{
-          'price_data': {
-            'currency': 'eur',
-            'product_data': {'name': product.name},
-            'unit_amount': int(product.price * 100),
-          },
-          'quantity': 1,
+            'price_data': {
+                'currency': 'eur',
+                'product_data': {'name': product.name},
+                'unit_amount': int(product.price * 100),
+            },
+            'quantity': 1,
         }],
         mode='payment',
         success_url=request.build_absolute_uri(
-          reverse('store:checkout_success')
+            reverse('store:checkout_success')
         ),
         cancel_url=request.build_absolute_uri(
-          reverse('store:checkout_cancel')
+            reverse('store:checkout_cancel')
         ),
-        metadata={'product_id': product.id}
+        metadata={'product_id': product.id, 'user_id': request.user.id}
     )
     return redirect(session.url, code=303)
 
 
 @login_required
 def checkout_success(request):
+    request.session['cart'] = {}
     return render(request, 'store/checkout_success.html')
 
 
@@ -174,22 +187,41 @@ def checkout_cancel(request):
 
 @csrf_exempt
 def oneoff_webhook(request):
-    payload, sig = request.body, request.META.get('HTTP_STRIPE_SIGNATURE')
+    payload = request.body
+    sig = request.META.get('HTTP_STRIPE_SIGNATURE')
     try:
         event = stripe.Webhook.construct_event(
-          payload, sig, settings.STRIPE_WEBHOOK_SECRET
+            payload, sig, settings.STRIPE_WEBHOOK_SECRET
         )
     except Exception:
         return HttpResponse(status=400)
 
-    if event['type']=='checkout.session.completed':
+    if event['type'] == 'checkout.session.completed':
         sess = event['data']['object']
-        user = User.objects.get(email=sess['customer_details']['email'])
-        prod = Product.objects.get(pk=sess['metadata']['product_id'])
-        order = Order.objects.create(
-          user=user, total_cents=prod.price_cents, status='paid'
-        )
-        OrderItem.objects.create(
-          order=order, product=prod, quantity=1, unit_price=prod.price_cents
-        )
+        user_id = sess['metadata'].get('user_id')
+        cart_str = sess['metadata'].get('cart')
+        if cart_str:
+            cart = ast.literal_eval(cart_str)
+            user = User.objects.get(id=user_id)
+            total = 0
+            order = Order.objects.create(user=user, total_cents=0, status='paid')
+            for prod_id, qty in cart.items():
+                product = Product.objects.get(pk=prod_id)
+                line_total = product.price * qty
+                OrderItem.objects.create(
+                    order=order, product=product, quantity=qty, unit_price=product.price
+                )
+                total += line_total
+            order.total_cents = int(total * 100)
+            order.save()
+        else:
+            product_id = sess['metadata'].get('product_id')
+            user = User.objects.get(id=user_id)
+            product = Product.objects.get(pk=product_id)
+            order = Order.objects.create(
+                user=user, total_cents=int(product.price * 100), status='paid'
+            )
+            OrderItem.objects.create(
+                order=order, product=product, quantity=1, unit_price=product.price
+            )
     return HttpResponse(status=200)

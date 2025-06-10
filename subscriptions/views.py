@@ -103,12 +103,10 @@ def stripe_webhook(request):
         except (User.DoesNotExist, Plan.DoesNotExist):
             return HttpResponse(status=400)
 
-        # Fetch the Stripe subscription to get next payment date
         stripe_subscription = stripe.Subscription.retrieve(stripe_sub_id)
         next_payment_unix = stripe_subscription['current_period_end']
         next_payment_date = timezone.datetime.fromtimestamp(next_payment_unix).date()
 
-        # Create or update the Subscription object
         Subscription.objects.update_or_create(
             stripe_sub_id=stripe_sub_id,
             defaults={
