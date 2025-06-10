@@ -26,7 +26,7 @@ def subscribe_plan(request, plan_id):
         payment_method_types=['card'],
         line_items=[{
             'price_data': {
-                'currency': 'usd',
+                'currency': 'eur',
                 'product_data': {'name': plan.name},
                 'unit_amount': int(plan.price * 100)
             },
