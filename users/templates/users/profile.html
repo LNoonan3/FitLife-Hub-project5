@@ -13,6 +13,19 @@
     <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
     <p><strong>Fitness Goal:</strong> {{ user.profile.fitness_goal|default:"Not specified." }}</p>
     <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary">Edit Profile</a>
+    <hr>
+    {% if subscription %}
+      <h5>Your Subscription</h5>
+      <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
+      <p><strong>Status:</strong> {{ subscription.status|title }}</p>
+      <p><strong>Start Date:</strong> {{ subscription.start_date }}</p>
+      <p><strong>Next Payment Due:</strong> {{ subscription.next_payment_date }}</p>
+      {% if subscription.status == 'active' %}
+        <a href="{% url 'subscriptions:cancel_subscription' subscription.id %}" class="btn btn-danger btn-sm mt-2">Cancel Subscription</a>
+      {% endif %}
+    {% else %}
+      <p class="text-muted">You do not have an active subscription.</p>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

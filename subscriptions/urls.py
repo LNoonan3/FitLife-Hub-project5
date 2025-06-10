@@ -8,5 +8,7 @@ urlpatterns = [
     path('subscribe/<int:plan_id>/', views.subscribe_plan, name='subscribe_plan'),
     path('success/', views.subscription_success, name='subscription_success'),
     path('cancel/', views.subscription_cancel, name='subscription_cancel'),
+    path('my/', views.my_subscription, name='my_subscription'),
+    path('cancel/<int:sub_id>/', views.cancel_subscription, name='cancel_subscription'),
     path('webhook/', views.stripe_webhook, name='stripe_webhook'),
 ]

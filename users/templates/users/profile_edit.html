@@ -1,3 +1,4 @@
+<!-- filepath: users/templates/users/profile_edit.html -->
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
@@ -13,6 +14,20 @@
       <button type="submit" class="btn btn-success">Save Changes</button>
       <a href="{% url 'users:profile' %}" class="btn btn-link">Cancel</a>
     </form>
+    {% if subscription %}
+      <hr>
+      <h5>Your Subscription</h5>
+      <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
+      <p><strong>Status:</strong> {{ subscription.status|title }}</p>
+      <p><strong>Start Date:</strong> {{ subscription.start_date }}</p>
+      <p><strong>Next Payment Due:</strong> {{ subscription.next_payment_date }}</p>
+      {% if subscription.status == 'active' %}
+        <form method="post" action="{% url 'subscriptions:cancel_subscription' subscription.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm mt-2">Cancel Subscription</button>
+        </form>
+      {% endif %}
+    {% endif %}
   </div>
 </div>
 {% endblock %}

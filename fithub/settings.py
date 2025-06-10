@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1',  # vs code preview
+    '127.0.0.1',
     ]
 
 
@@ -99,6 +99,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'fithub.wsgi.application'
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
 
 # Database
@@ -172,6 +174,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Stripe Keys
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
@@ -185,3 +188,5 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'email2*', 'username*', 'password1*', 'passwo
 ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "/"
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "/"

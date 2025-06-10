@@ -1,14 +1,19 @@
-{% extends "account/base_entrance.html" %}
+{% extends "base.html" %}
 {% load i18n %}
 {% load allauth %}
-{% block head_title %}
-    {% trans "Verify Your Email Address" %}
-{% endblock head_title %}
+{% block title %}Verify Your Email Address – FitLife Hub{% endblock %}
 {% block content %}
-    {% element h1 %}
-        {% trans "Verify Your Email Address" %}
-    {% endelement %}
-    {% element p %}
-        {% blocktrans %}We have sent an email to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification email in your main inbox, check your spam folder. Please contact us if you do not receive the verification email within a few minutes.{% endblocktrans %}
-    {% endelement %}
-{% endblock content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm border-0 mt-5">
+      <div class="card-body p-4 text-center">
+        <h2 class="mb-3">{% trans "Verify Your Email Address" %}</h2>
+        <p>
+          {% blocktrans %}We have sent an email to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification email in your main inbox, check your spam folder. Please contact us if you do not receive the verification email within a few minutes.{% endblocktrans %}
+        </p>
+        <a href="/" class="btn btn-primary mt-3">{% trans "Go to Home" %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

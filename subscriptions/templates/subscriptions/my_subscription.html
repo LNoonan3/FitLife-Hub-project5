@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}My Subscription{% endblock %}
+{% block content %}
+<h2>My Subscription</h2>
+{% if subscription %}
+  <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
+  <p><strong>Status:</strong> {{ subscription.status|title }}</p>
+  <p><strong>Start Date:</strong> {{ subscription.start_date }}</p>
+  {% if subscription.status == 'active' %}
+    <p><strong>Next Payment Due:</strong> {{ subscription.next_payment_date }}</p>
+    <form method="post" action="{% url 'subscriptions:cancel_subscription' subscription.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Cancel Subscription</button>
+    </form>
+  {% else %}
+    <p><strong>End Date:</strong> {{ subscription.end_date }}</p>
+  {% endif %}
+{% else %}
+  <p>You do not have an active subscription.</p>
+{% endif %}
+{% endblock %}
