@@ -52,14 +52,26 @@
     <h5 class="card-title mb-3">Your Subscription</h5>
     {% if subscription %}
       <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
-      <p><strong>Status:</strong> {{ subscription.status|title }}</p>
+      <p>
+        <strong>Status:</strong>
+        {% if subscription.status == 'active' %}
+          <span class="badge bg-success">Active</span>
+        {% elif subscription.status == 'canceled' %}
+          <span class="badge bg-secondary">Canceled</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">{{ subscription.status|title }}</span>
+        {% endif %}
+      </p>
       <p><strong>Start Date:</strong> {{ subscription.start_date }}</p>
       {% if subscription.status == 'active' %}
         <p><strong>Next Payment Due:</strong> {{ subscription.next_payment_date }}</p>
         {% if days_until_next_payment is not None %}
           <p><strong>Days Until Next Payment:</strong> {{ days_until_next_payment }}</p>
         {% endif %}
-        <a href="{% url 'subscriptions:cancel_subscription' subscription.id %}" class="btn btn-danger btn-sm mt-2">Cancel Subscription</a>
+        <form method="post" action="{% url 'subscriptions:cancel_subscription' subscription.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm mt-2">Cancel Subscription</button>
+        </form>
       {% else %}
         <p><strong>End Date:</strong> {{ subscription.end_date }}</p>
       {% endif %}

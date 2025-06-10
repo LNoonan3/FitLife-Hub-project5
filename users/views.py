@@ -23,7 +23,7 @@ def signup_view(request):
 
 @login_required
 def profile(request):
-    subscription = Subscription.objects.filter(user=request.user, status='active').order_by('-start_date').first()
+    subscription = Subscription.objects.filter(user=request.user).order_by('-start_date').first()
     days_until_next_payment = None
     if subscription and subscription.next_payment_date:
         days_until_next_payment = (subscription.next_payment_date - date.today()).days

@@ -51,14 +51,17 @@ def subscribe_plan(request, plan_id):
 def cancel_subscription(request, sub_id):
     subscription = Subscription.objects.get(pk=sub_id, user=request.user)
     if subscription.status == 'active':
-        subscription.status = 'canceled'
-        subscription.end_date = date.today()
-        subscription.save()
-        messages.success(request, "Your subscription has been canceled.")
+        import stripe
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        try:
+            stripe.Subscription.delete(subscription.stripe_sub_id)
+        except Exception:
+            messages.error(request, "Could not cancel on Stripe. Please contact support.")
+            return redirect('subscriptions:my_subscription')
+        messages.success(request, "Your subscription has been canceled. You will retain access until the end of your billing period.")
     else:
         messages.info(request, "Subscription is already canceled.")
     return redirect('subscriptions:my_subscription')
-
 
 @login_required
 def my_subscription(request):
@@ -86,9 +89,7 @@ def stripe_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
-    except ValueError:
-        return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError:
+    except Exception:
         return HttpResponse(status=400)
 
     if event['type'] == 'checkout.session.completed':
@@ -115,7 +116,18 @@ def stripe_webhook(request):
                 'status': 'active',
                 'start_date': timezone.now().date(),
                 'next_payment_date': next_payment_date,
+                'end_date': None,
             }
         )
+
+    if event['type'] == 'customer.subscription.deleted':
+        stripe_sub_id = event['data']['object']['id']
+        try:
+            sub = Subscription.objects.get(stripe_sub_id=stripe_sub_id)
+            sub.status = 'canceled'
+            sub.end_date = timezone.now().date()
+            sub.save()
+        except Subscription.DoesNotExist:
+            pass
 
     return HttpResponse(status=200)
