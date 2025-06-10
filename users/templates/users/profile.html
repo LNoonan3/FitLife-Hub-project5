@@ -3,28 +3,70 @@
 {% block title %}Profile – {{ user.username }}{% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="col-md-4">
-    <h3>{{ user.username }}’s Profile</h3>
-    {% if user.profile.avatar_url %}
-      <img src="{{ user.profile.avatar_url }}" class="img-fluid rounded-circle mb-3" alt="Avatar">
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body d-flex flex-column flex-md-row align-items-center">
+        <div class="me-md-4 text-center">
+          {% if user.profile.avatar_url %}
+            <img src="{{ user.profile.avatar_url }}" class="img-fluid rounded-circle mb-3" alt="Avatar" style="width: 120px; height: 120px; object-fit: cover;">
+          {% else %}
+            <div class="bg-secondary rounded-circle mb-3" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
+              <span class="text-white fs-1">{{ user.username|slice:":1"|upper }}</span>
+            </div>
+          {% endif %}
+          <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary btn-sm">Edit Profile</a>
+        </div>
+        <div>
+          <h3>{{ user.username }}</h3>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
+          <p><strong>Fitness Goal:</strong> {{ user.profile.fitness_goal|default:"Not specified." }}</p>
+          <a href="{% url 'account_change_password' %}" class="btn btn-link btn-sm px-0">Change Password</a>
+        </div>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Your Recent Progress</h5>
+    {% if recent_updates %}
+      <ul class="list-group list-group-flush">
+        {% for update in recent_updates %}
+          <li class="list-group-item">
+            <strong>{{ update.title }}</strong> – {{ update.created_at|date:"M d, Y" }}<br>
+            {{ update.content|truncatewords:20 }}
+            <a href="{% url 'core:progress_list' %}" class="btn btn-link btn-sm">View All</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">You haven't posted any progress updates yet.</p>
+      <a href="{% url 'core:progress_create' %}" class="btn btn-outline-success btn-sm">Share Progress</a>
     {% endif %}
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
-    <p><strong>Fitness Goal:</strong> {{ user.profile.fitness_goal|default:"Not specified." }}</p>
-    <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary">Edit Profile</a>
-    <hr>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Your Subscription</h5>
     {% if subscription %}
-      <h5>Your Subscription</h5>
       <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
       <p><strong>Status:</strong> {{ subscription.status|title }}</p>
       <p><strong>Start Date:</strong> {{ subscription.start_date }}</p>
-      <p><strong>Next Payment Due:</strong> {{ subscription.next_payment_date }}</p>
       {% if subscription.status == 'active' %}
+        <p><strong>Next Payment Due:</strong> {{ subscription.next_payment_date }}</p>
+        {% if days_until_next_payment is not None %}
+          <p><strong>Days Until Next Payment:</strong> {{ days_until_next_payment }}</p>
+        {% endif %}
         <a href="{% url 'subscriptions:cancel_subscription' subscription.id %}" class="btn btn-danger btn-sm mt-2">Cancel Subscription</a>
+      {% else %}
+        <p><strong>End Date:</strong> {{ subscription.end_date }}</p>
       {% endif %}
+      <a href="{% url 'subscriptions:my_subscription' %}" class="btn btn-outline-primary btn-sm mt-2">Manage Subscription</a>
     {% else %}
       <p class="text-muted">You do not have an active subscription.</p>
+      <a href="{% url 'subscriptions:plan_list' %}" class="btn btn-primary btn-sm">View Plans</a>
     {% endif %}
   </div>
 </div>

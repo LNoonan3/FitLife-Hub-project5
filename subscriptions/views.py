@@ -5,12 +5,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.contrib.auth.models import User
+from .models import Subscription, Plan
 
-from .models import Plan, Subscription
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -78,32 +79,45 @@ def subscription_cancel(request):
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
-    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
 
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
-    except Exception:
+    except ValueError:
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError:
         return HttpResponse(status=400)
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        plan_id = session['metadata']['plan_id']
-        user = User.objects.filter(email=session['customer_email']).first()
-        plan = Plan.objects.get(pk=plan_id)
-        interval = plan.interval
-        if interval == 'monthly':
-            next_payment = date.today() + timedelta(days=30)
-        else:
-            next_payment = date.today() + timedelta(days=365)
-        Subscription.objects.create(
-            user=user,
-            plan=plan,
-            stripe_sub_id=session.get('subscription', ''),
-            start_date=date.today(),
-            next_payment_date=next_payment,
-            status='active'
+        customer_email = session.get('customer_email')
+        stripe_sub_id = session.get('subscription')
+        plan_id = session['metadata'].get('plan_id')
+
+        try:
+            user = User.objects.get(email=customer_email)
+            plan = Plan.objects.get(id=plan_id)
+        except (User.DoesNotExist, Plan.DoesNotExist):
+            return HttpResponse(status=400)
+
+        # Fetch the Stripe subscription to get next payment date
+        stripe_subscription = stripe.Subscription.retrieve(stripe_sub_id)
+        next_payment_unix = stripe_subscription['current_period_end']
+        next_payment_date = timezone.datetime.fromtimestamp(next_payment_unix).date()
+
+        # Create or update the Subscription object
+        Subscription.objects.update_or_create(
+            stripe_sub_id=stripe_sub_id,
+            defaults={
+                'user': user,
+                'plan': plan,
+                'status': 'active',
+                'start_date': timezone.now().date(),
+                'next_payment_date': next_payment_date,
+            }
         )
+
     return HttpResponse(status=200)
