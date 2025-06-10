@@ -11,6 +11,12 @@
     <h2>{{ product.name }}</h2>
     <p>{{ product.description }}</p>
     <h4>€{{ product.price|floatformat:2 }}</h4>
+    <form action="{% url 'store:oneoff_checkout' product.pk %}" method="post" class="with-spinner">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-success mb-2">
+        Buy Now – €{{ product.price|floatformat:2 }}
+      </button>
+    </form>
     <button class="btn btn-success" id="add-to-cart-btn">Add to Cart</button>
     <!-- Cart AJAX script -->
     <script>
@@ -37,12 +43,6 @@
 
 {% if user.is_authenticated %}
 <h4>Submit a Review</h4>
-<form action="{% url 'store:oneoff_checkout' product.pk %}" method="post" class="with-spinner">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-success">
-    Buy Now – ${{ product.price_cents|floatformat:2 }}
-  </button>
-</form>
 {% else %}
   <p><a href="{% url 'login' %}">Log in</a> to post a review.</p>
 {% endif %}
