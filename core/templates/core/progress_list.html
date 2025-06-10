@@ -7,7 +7,15 @@
     <div class="card-body">
       <h5>{{ update.title }} <small class="text-muted">by {{ update.user.username }}</small></h5>
       <p>{{ update.content }}</p>
-      {% if update.image %}<img src="{{ update.image.url }}" class="img-fluid mt-2">{% endif %}
+      {% if update.image %}
+        <img src="{{ update.image.url }}" class="img-fluid mt-2">
+      {% endif %}
+      {% if user.is_authenticated and update.user == user %}
+        <form method="post" action="{% url 'core:progress_delete' update.pk %}" class="mt-2 d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this update?');">Delete</button>
+        </form>
+      {% endif %}
     </div>
   </div>
 {% empty %}

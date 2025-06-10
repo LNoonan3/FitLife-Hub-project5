@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Delete Progress Update{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mt-5">
+        <div class="card-body text-center">
+          <h3>Delete Progress Update</h3>
+          <p>Are you sure you want to delete "<strong>{{ update.title }}</strong>"?</p>
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'core:progress_list' %}" class="btn btn-secondary">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

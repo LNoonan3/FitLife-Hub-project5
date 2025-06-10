@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import ProgressUpdate, NewsletterSubscriber
@@ -22,6 +22,17 @@ def progress_create(request):
         messages.success(request, "Your update was posted!")
         return redirect('core:progress_list')
     return render(request, 'core/progress_form.html', {'form': form})
+
+
+@login_required
+def progress_delete(request, pk):
+    """Allow users to delete their own progress update."""
+    update = get_object_or_404(ProgressUpdate, pk=pk, user=request.user)
+    if request.method == 'POST':
+        update.delete()
+        messages.success(request, "Your progress update was deleted.")
+        return redirect('core:progress_list')
+    return render(request, 'core/progress_confirm_delete.html', {'update': update})
 
 
 def newsletter_subscribe(request):
