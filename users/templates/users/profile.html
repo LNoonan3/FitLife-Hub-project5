@@ -8,8 +8,8 @@
     <div class="card shadow-sm mb-4">
       <div class="card-body d-flex flex-column flex-md-row align-items-center">
         <div class="me-md-4 text-center">
-          {% if user.profile.avatar_url %}
-            <img src="{{ user.profile.avatar_url }}" class="img-fluid rounded-circle mb-3" alt="Avatar" style="width: 120px; height: 120px; object-fit: cover;">
+          {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" class="img-fluid rounded-circle mb-3" alt="Avatar" style="width: 120px; height: 120px; object-fit: cover;">
           {% else %}
             <div class="bg-secondary rounded-circle mb-3" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
               <span class="text-white fs-1">{{ user.username|slice:":1"|upper }}</span>
