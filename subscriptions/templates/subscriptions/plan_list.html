@@ -16,33 +16,33 @@
         <h6 class="text-center mb-3 text-muted">€{{ plan.price|floatformat:2 }} / {{ plan.interval|title }}</h6>
         <ul class="list-unstyled mb-4">
           <li class="mb-2">
-            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <i class="fa-solid fa-dumbbell text-success me-2"></i>
             Access to all workout & nutrition plans
           </li>
           <li class="mb-2">
-            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <i class="fa-solid fa-users text-success me-2"></i>
             Community support & progress tracking
           </li>
           <li class="mb-2">
-            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <i class="fa-solid fa-envelope-open-text text-success me-2"></i>
             Exclusive member newsletter
           </li>
           {% if plan.interval == 'monthly' %}
           <li class="mb-2">
-            <i class="bi bi-calendar-event text-info me-2"></i>
+            <i class="fa-regular fa-calendar text-info me-2"></i>
             Billed monthly, cancel anytime
           </li>
           <li class="mb-2">
-            <i class="bi bi-gift text-warning me-2"></i>
+            <i class="fa-solid fa-gift text-warning me-2"></i>
             7-day free trial
           </li>
           {% elif plan.interval == 'yearly' %}
           <li class="mb-2">
-            <i class="bi bi-calendar2-check text-info me-2"></i>
+            <i class="fa-regular fa-calendar-check text-info me-2"></i>
             Billed once per year (save 20% vs monthly)
           </li>
           <li class="mb-2">
-            <i class="bi bi-star-fill text-warning me-2"></i>
+            <i class="fa-solid fa-shirt text-warning me-2"></i>
             Free FitLife T-shirt (welcome gift)
           </li>
           {% endif %}

@@ -19,9 +19,9 @@
         </div>
         <div>
           <h3>{{ user.username }}</h3>
-          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p><strong><i class="fa-solid fa-envelope me-1"></i>Email:</strong> {{ user.email }}</p>
           <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
-          <p><strong>Fitness Goal:</strong> {{ user.profile.fitness_goal|default:"Not specified." }}</p>
+          <p><strong><i class="fa-solid fa-bullseye me-1"></i>Fitness Goal:</strong> {{ user.profile.fitness_goal|default:"Not specified." }}</p>
           <a href="{% url 'account_change_password' %}" class="btn btn-link btn-sm px-0">Change Password</a>
         </div>
   </div>
