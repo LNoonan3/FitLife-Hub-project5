@@ -1,10 +1,16 @@
-/* Custom theme overrides */
-
 /* Body background and font */
 body {
   background-color: #f8f9fa;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   color: #343a40;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+html, body {
+  height: 100%;
+  min-height: 100%;
 }
 
 /* Navbar */
@@ -23,6 +29,10 @@ body {
 }
 .nav-link:hover, .nav-link.active {
   color: #007bff !important;
+}
+
+.main-content {
+  flex: 1 0 auto;
 }
 
 /* Cards */
@@ -117,12 +127,25 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Footer */
-footer {
-  background: #fff;
-  border-top: 1px solid #e9ecef;
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  color: #6c757d;
+.footer {
+  background: #23272b;
+  color: #fff;
+  border-top: 1px solid #343a40;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+.footer a {
+  transition: color 0.2s;
+}
+.footer a:hover {
+  color: #00c6ff !important;
+  text-decoration: none;
+}
+@media (min-width: 992px) {
+  .footer .row.align-items-center {
+    min-height: 60px;
+  }
 }
 
 /* Profile Avatar */
