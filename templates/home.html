@@ -1,12 +1,19 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Home – FitLife Hub{% endblock %}
 {% block content %}
-<div class="jumbotron p-5 bg-light rounded-3">
-  <h1 class="display-5">Welcome to FitLife Hub</h1>
-  <p class="lead">Join our community, subscribe to expert plans, and shop premium fitness gear.</p>
-  <hr class="my-4">
-  <a class="btn btn-primary btn-lg" href="{% url 'subscriptions:plan_list' %}">View Plans</a>
-  <a class="btn btn-outline-secondary btn-lg" href="{% url 'store:product_list' %}">Shop Products</a>
+<div class="hero-banner position-relative mb-5" style="background: url('{% static 'img/hero.jpg' %}') center center/cover no-repeat; min-height: 350px; border-radius: 0.75rem; overflow: hidden;">
+  <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.45);"></div>
+  <div class="container h-100 d-flex flex-column justify-content-center align-items-center position-relative" style="z-index:2; min-height: 350px;">
+    <h1 class="display-4 text-white fw-bold text-center mb-3" style="text-shadow: 0 2px 8px rgba(0,0,0,0.4);">Welcome to FitLife Hub</h1>
+    <p class="lead text-white text-center mb-4" style="text-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+      Join our community, subscribe to expert plans, and shop premium fitness gear.
+    </p>
+    <div>
+      <a class="btn btn-primary btn-lg me-2" href="{% url 'subscriptions:plan_list' %}">View Plans</a>
+      <a class="btn btn-outline-light btn-lg" href="{% url 'store:product_list' %}">Shop Products</a>
+    </div>
+  </div>
 </div>
 
 <!-- Features Section -->
