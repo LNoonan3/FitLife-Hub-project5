@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block title %}Plans – FitLife Hub{% endblock %} {%block content %}
+{% extends 'base.html' %} 
+{% block title %}Plans – FitLife Hub{% endblock %} 
+{% block content %}
 <h2>Subscription Plans</h2>
 <div class="row">
   {% for plan in plans %}
@@ -8,16 +10,22 @@
         <h5 class="card-title">{{ plan.name }}</h5>
         <p class="card-text">{{ plan.description }}</p>
         <h6>€{{ plan.price|floatformat:2 }} / {{ plan.interval }}</h6>
-        <form
-          action="{% url 'subscriptions:subscribe_plan' plan.id %}"
-          method="post"
-          class="d-inline with-spinner"
-        >
-          {% csrf_token %}
-          <button type="submit" class="btn btn-primary">
-            Subscribe — €{{ plan.price|floatformat:2 }}/{{ plan.interval }}
+        {% if user.is_authenticated and plan.id in user_active_plan_ids %}
+          <button class="btn btn-secondary" disabled>
+            Already Subscribed
           </button>
-        </form>
+        {% else %}
+          <form
+            action="{% url 'subscriptions:subscribe_plan' plan.id %}"
+            method="post"
+            class="d-inline with-spinner"
+          >
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">
+              Subscribe — €{{ plan.price|floatformat:2 }}/{{ plan.interval }}
+            </button>
+          </form>
+        {% endif %}
       </div>
     </div>
   </div>

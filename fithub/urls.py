@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from subscriptions.views import stripe_webhook
 
 
 urlpatterns = [
@@ -28,6 +29,7 @@ urlpatterns = [
     path('store/', include('store.urls', namespace='store')),
     path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
     path('core/', include('core.urls', namespace='core')),
+    path('webhook/', stripe_webhook, name='stripe_webhook'),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
 if settings.DEBUG:

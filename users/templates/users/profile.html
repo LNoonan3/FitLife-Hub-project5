@@ -47,39 +47,47 @@
   </div>
 </div>
 
-<div class="card shadow-sm mb-4">
-  <div class="card-body">
-    <h5 class="card-title mb-3">Your Subscription</h5>
-    {% if subscription %}
-      <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
-      <p>
-        <strong>Status:</strong>
+<a href="{% url 'subscriptions:my_subscription' %}" style="text-decoration: none; color: inherit;">
+  <div class="card shadow-sm mb-4 hover-shadow" style="transition: box-shadow 0.2s;">
+    <div class="card-body">
+      <h5 class="card-title mb-3">Your Subscription</h5>
+      {% if subscription %}
+        <div class="mb-2">
+          <span class="fw-bold">Plan:</span> {{ subscription.plan.name }}
+        </div>
+        <div class="mb-2">
+          <span class="fw-bold">Status:</span>
+          {% if subscription.status == 'active' %}
+            <span class="badge bg-success">Active</span>
+          {% elif subscription.status == 'canceled' %}
+            <span class="badge bg-secondary">Canceled</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">{{ subscription.status|title }}</span>
+          {% endif %}
+        </div>
+        <div class="mb-2">
+          <span class="fw-bold">Start Date:</span> {{ subscription.start_date }}
+        </div>
         {% if subscription.status == 'active' %}
-          <span class="badge bg-success">Active</span>
-        {% elif subscription.status == 'canceled' %}
-          <span class="badge bg-secondary">Canceled</span>
+          <div class="mb-2">
+            <span class="fw-bold">Next Payment Due:</span> {{ subscription.next_payment_date }}
+          </div>
+          {% if days_until_next_payment is not None %}
+            <div class="mb-2">
+              <span class="fw-bold">Days Until Next Payment:</span> {{ days_until_next_payment }}
+            </div>
+          {% endif %}
+          <span class="text-muted ms-2">Click to manage or cancel your subscription.</span>
         {% else %}
-          <span class="badge bg-warning text-dark">{{ subscription.status|title }}</span>
+          <div class="mb-2">
+            <span class="fw-bold">End Date:</span> {{ subscription.end_date }}
+          </div>
         {% endif %}
-      </p>
-      <p><strong>Start Date:</strong> {{ subscription.start_date }}</p>
-      {% if subscription.status == 'active' %}
-        <p><strong>Next Payment Due:</strong> {{ subscription.next_payment_date }}</p>
-        {% if days_until_next_payment is not None %}
-          <p><strong>Days Until Next Payment:</strong> {{ days_until_next_payment }}</p>
-        {% endif %}
-        <form method="post" action="{% url 'subscriptions:cancel_subscription' subscription.id %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-danger btn-sm mt-2">Cancel Subscription</button>
-        </form>
       {% else %}
-        <p><strong>End Date:</strong> {{ subscription.end_date }}</p>
+        <p class="text-muted">You do not have an active subscription.</p>
+        <span class="btn btn-primary btn-sm">View Plans</span>
       {% endif %}
-      <a href="{% url 'subscriptions:my_subscription' %}" class="btn btn-outline-primary btn-sm mt-2">Manage Subscription</a>
-    {% else %}
-      <p class="text-muted">You do not have an active subscription.</p>
-      <a href="{% url 'subscriptions:plan_list' %}" class="btn btn-primary btn-sm">View Plans</a>
-    {% endif %}
+    </div>
   </div>
-</div>
+</a>
 {% endblock %}
