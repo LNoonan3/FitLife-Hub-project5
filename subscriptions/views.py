@@ -1,5 +1,6 @@
 import stripe
 from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta 
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -84,7 +85,7 @@ def cancel_subscription(request, sub_id):
 
 @login_required
 def my_subscription(request):
-    subscription = Subscription.objects.filter(user=request.user).order_by('-start_date').first()
+    subscription = Subscription.objects.filter(user=request.user, status='active').order_by('-start_date').first()
     return render(request, 'subscriptions/my_subscription.html', {'subscription': subscription})
 
 
@@ -120,31 +121,20 @@ def stripe_webhook(request):
         stripe_sub_id = session.get('subscription')
         plan_id = session.get('metadata', {}).get('plan_id')
 
-        print("Session data:", session)
-        print("customer_email:", customer_email, "stripe_sub_id:", stripe_sub_id, "plan_id:", plan_id)
-
         try:
             user = User.objects.get(email=customer_email)
-        except User.DoesNotExist:
-            print("User not found for email:", customer_email)
-            return HttpResponse(status=400)
-        try:
             plan = Plan.objects.get(id=plan_id)
-        except Plan.DoesNotExist:
-            print("Plan not found for id:", plan_id)
+        except (User.DoesNotExist, Plan.DoesNotExist):
             return HttpResponse(status=400)
-        try:
-            stripe_subscription = stripe.Subscription.retrieve(stripe_sub_id)
-            items = stripe_subscription['items']['data']
-            if items and 'current_period_end' in items[0]:
-                next_payment_unix = items[0]['current_period_end']
-                next_payment_date = timezone.datetime.fromtimestamp(next_payment_unix).date()
-            else:
-                print("No current_period_end found in subscription items!")
-                next_payment_date = None
-        except Exception as e:
-            print("Stripe subscription retrieve failed:", e)
-            return HttpResponse(status=400)
+
+        start_date = timezone.now().date()
+        # Set next_payment_date based on plan interval
+        if plan.interval == 'monthly':
+            next_payment_date = start_date + relativedelta(months=1)
+        elif plan.interval == 'yearly':
+            next_payment_date = start_date + relativedelta(years=1)
+        else:
+            next_payment_date = None
 
         Subscription.objects.update_or_create(
             stripe_sub_id=stripe_sub_id,
@@ -152,7 +142,7 @@ def stripe_webhook(request):
                 'user': user,
                 'plan': plan,
                 'status': 'active',
-                'start_date': timezone.now().date(),
+                'start_date': start_date,
                 'next_payment_date': next_payment_date,
                 'end_date': None,
             }
