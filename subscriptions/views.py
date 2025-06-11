@@ -17,8 +17,9 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def plan_list(request):
-    """Display available subscription plans."""
     plans = Plan.objects.filter(is_active=True)
+    if request.GET.get('subscribed') == '1':
+        messages.success(request, "Thank you! Your subscription was successful.")
     return render(request, 'subscriptions/plan_list.html', {'plans': plans})
 
 
@@ -37,7 +38,7 @@ def subscribe_plan(request, plan_id):
         }],
         mode='subscription',
         success_url=request.build_absolute_uri(
-            reverse('subscriptions:subscription_success')
+            reverse('subscriptions:plan_list') + '?subscribed=1'
         ),
         cancel_url=request.build_absolute_uri(
             reverse('subscriptions:subscription_cancel')
@@ -62,6 +63,7 @@ def cancel_subscription(request, sub_id):
     else:
         messages.info(request, "Subscription is already canceled.")
     return redirect('subscriptions:my_subscription')
+
 
 @login_required
 def my_subscription(request):
