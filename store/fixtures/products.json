@@ -7,7 +7,7 @@
       "description": "High-quality non-slip yoga mat for all fitness levels.",
       "price": "24.99",
       "stock": 50,
-      "image": "",
+      "image": "yoga-mat.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -20,7 +20,7 @@
       "description": "Adjustable dumbbell set, perfect for home workouts.",
       "price": "59.99",
       "stock": 30,
-      "image": "",
+      "image": "dumbbell-set.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -33,7 +33,7 @@
       "description": "Set of 5 resistance bands for strength training.",
       "price": "14.99",
       "stock": 100,
-      "image": "",
+      "image": "resistance-bands.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -46,7 +46,7 @@
       "description": "Durable cast iron kettlebell for dynamic workouts.",
       "price": "34.99",
       "stock": 25,
-      "image": "",
+      "image": "12kg-kettlebell.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -59,7 +59,7 @@
       "description": "Textured foam roller for muscle recovery and massage.",
       "price": "19.99",
       "stock": 40,
-      "image": "",
+      "image": "foam-roller.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -72,7 +72,7 @@
       "description": "Adjustable speed skipping rope for cardio workouts.",
       "price": "9.99",
       "stock": 75,
-      "image": "",
+      "image": "skipping-rope.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -85,7 +85,7 @@
       "description": "Track your steps, heart rate, and calories burned.",
       "price": "49.99",
       "stock": 20,
-      "image": "",
+      "image": "fitness-tracker.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -98,7 +98,7 @@
       "description": "Spacious and stylish gym bag with multiple compartments.",
       "price": "29.99",
       "stock": 35,
-      "image": "",
+      "image": "gym-bag.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -111,7 +111,7 @@
       "description": "1L BPA-free water bottle with time marker.",
       "price": "12.99",
       "stock": 60,
-      "image": "",
+      "image": "water-bottle.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -124,7 +124,7 @@
       "description": "Non-slip push-up bars for upper body workouts.",
       "price": "17.99",
       "stock": 45,
-      "image": "",
+      "image": "push-up-bar.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -137,7 +137,7 @@
     "description": "Multi-position bench for a variety of strength exercises.",
     "price": "89.99",
     "stock": 15,
-    "image": "",
+    "image": "adjustable-bench.jpg",
     "created_at": "2025-06-01T10:00:00Z",
     "updated_at": "2025-06-01T10:00:00Z"
     }
@@ -150,7 +150,7 @@
       "description": "Doorway pull-up bar for upper body and core workouts.",
       "price": "27.99",
       "stock": 25,
-      "image": "",
+      "image": "pull-bar.jpg",
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-01T10:00:00Z"
     }
