@@ -1,131 +1,253 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# FitLife Hub
 
-Welcome USER_NAME,
+![FitLife Hub Banner](README-img/banner.jpg)
 
-This is the Code Institute student template for Gitpod. We have preinstalled all of the tools you need to get started. It's perfectly ok to use this template as the basis for your project submissions.
-
-You can safely delete this README.md file or change it for your own project. Please do read it at least once, though! It contains some important information about Gitpod and the extensions we use. Some of this information has been updated since the video content was created. The last update to this file was: **June 18, 2024**
-
-## Gitpod Reminders
-
-To run a frontend (HTML, CSS, Javascript only) application in Gitpod, in the terminal, type:
-
-`python3 -m http.server`
-
-A blue button should appear to click: _Make Public_,
-
-Another blue button should appear to click: _Open Browser_.
-
-To run a backend Python file, type `python3 app.py` if your Python file is named `app.py`, of course.
-
-A blue button should appear to click: _Make Public_,
-
-Another blue button should appear to click: _Open Browser_.
-
-By Default, Gitpod gives you superuser security privileges. Therefore, you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the lessons.
-
-To log into the Heroku toolbelt CLI:
-
-1. Log in to your Heroku account and go to *Account Settings* in the menu under your avatar.
-2. Scroll down to the *API Key* and click *Reveal*
-3. Copy the key
-4. In Gitpod, from the terminal, run `heroku_config`
-5. Paste in your API key when asked
-
-You can now use the `heroku` CLI program - try running `heroku apps` to confirm it works. This API key is unique and private to you, so do not share it. If you accidentally make it public, you can create a new one with _Regenerate API Key_.
-
-### Connecting your Mongo database
-
-- **Connect to Mongo CLI on a IDE**
-- navigate to your MongoDB Clusters Sandbox
-- click **"Connect"** button
-- select **"Connect with the MongoDB shell"**
-- select **"I have the mongo shell installed"**
-- choose **mongosh (2.0 or later)** for : **"Select your mongo shell version"**
-- choose option: **"Run your connection string in your command line"**
-- in the terminal, paste the copied code `mongo "mongodb+srv://<CLUSTER-NAME>.mongodb.net/<DBname>" --apiVersion 1 --username <USERNAME>`
-  - replace all `<angle-bracket>` keys with your own data
-- enter password _(will not echo **\*\*\*\*** on screen)_
-
-------
-
-## Release History
-
-We continually tweak and adjust this template to help give you the best experience. Here is the version history:
-
-**June 18, 2024,** Add Mongo back into template
-
-**June 14, 2024,** Temporarily remove Mongo until the key issue is resolved
-
-**May 28 2024:** Fix Mongo and Links installs
-
-**April 26 2024:** Update node version to 16
-
-**September 20 2023:** Update Python version to 3.9.17.
-
-**September 1 2021:** Remove `PGHOSTADDR` environment variable.
-
-**July 19 2021:** Remove `font_fix` script now that the terminal font issue is fixed.
-
-**July 2 2021:** Remove extensions that are not available in Open VSX.
-
-**June 30 2021:** Combined the P4 and P5 templates into one file, added the uptime script. See the FAQ at the end of this file.
-
-**June 10 2021:** Added: `font_fix` script and alias to fix the Terminal font issue
-
-**May 10 2021:** Added `heroku_config` script to allow Heroku API key to be stored as an environment variable.
-
-**April 7 2021:** Upgraded the template for VS Code instead of Theia.
-
-**October 21 2020:** Versions of the HTMLHint, Prettier, Bootstrap4 CDN and Auto Close extensions updated. The Python extension needs to stay the same version for now.
-
-**October 08 2020:** Additional large Gitpod files (`core.mongo*` and `core.python*`) are now hidden in the Explorer, and have been added to the `.gitignore` by default.
-
-**September 22 2020:** Gitpod occasionally creates large `core.Microsoft` files. These are now hidden in the Explorer. A `.gitignore` file has been created to make sure these files will not be committed, along with other common files.
-
-**April 16 2020:** The template now automatically installs MySQL instead of relying on the Gitpod MySQL image. The message about a Python linter not being installed has been dealt with, and the set-up files are now hidden in the Gitpod file explorer.
-
-**April 13 2020:** Added the _Prettier_ code beautifier extension instead of the code formatter built-in to Gitpod.
-
-**February 2020:** The initialisation files now _do not_ auto-delete. They will remain in your project. You can safely ignore them. They just make sure that your workspace is configured correctly each time you open it. It will also prevent the Gitpod configuration popup from appearing.
-
-**December 2019:** Added Eventyret's Bootstrap 4 extension. Type `!bscdn` in a HTML file to add the Bootstrap boilerplate. Check out the <a href="https://github.com/Eventyret/vscode-bcdn" target="_blank">README.md file at the official repo</a> for more options.
-
-------
-
-## FAQ about the uptime script
-
-**Why have you added this script?**
-
-It will help us to calculate how many running workspaces there are at any one time, which greatly helps us with cost and capacity planning. It will help us decide on the future direction of our cloud-based IDE strategy.
-
-**How will this affect me?**
-
-For everyday usage of Gitpod, it doesn’t have any effect at all. The script only captures the following data:
-
-- An ID that is randomly generated each time the workspace is started.
-- The current date and time
-- The workspace status of “started” or “running”, which is sent every 5 minutes.
-
-It is not possible for us or anyone else to trace the random ID back to an individual, and no personal data is being captured. It will not slow down the workspace or affect your work.
-
-**So….?**
-
-We want to tell you this so that we are being completely transparent about the data we collect and what we do with it.
-
-**Can I opt out?**
-
-Yes, you can. Since no personally identifiable information is being captured, we'd appreciate it if you let the script run; however if you are unhappy with the idea, simply run the following commands from the terminal window after creating the workspace, and this will remove the uptime script:
-
-```
-pkill uptime.sh
-rm .vscode/uptime.sh
-```
-
-**Anything more?**
-
-Yes! We'd strongly encourage you to look at the source code of the `uptime.sh` file so that you know what it's doing. As future software developers, it will be great practice to see how these shell scripts work.
+**FitLife Hub** is a full-stack Django e-commerce and fitness community platform. Users can shop for fitness products, subscribe to premium workout plans, track their progress, and engage with a supportive community.  
+[Live Site Demo](https://fitlife-hub-22d9c7ccc31a.herokuapp.com/)
 
 ---
 
-Happy coding!
+## Table of Contents
+
+- [Project Purpose & Target Audience](#project-purpose--target-audience)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Data Schema](#data-schema)
+- [Business Model](#business-model)
+- [User Stories & Agile Process](#user-stories--agile-process)
+- [UX Design & Wireframes](#ux-design--wireframes)
+- [SEO & Marketing](#seo--marketing)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Configuration](#configuration)
+- [Credits](#credits)
+
+---
+
+## Project Purpose & Target Audience
+
+FitLife Hub is designed for fitness enthusiasts, beginners, and anyone seeking to improve their health through expert guidance and quality products.  
+**Purpose:**  
+- Provide a one-stop shop for fitness products and premium workout plans.
+- Foster a supportive community for sharing progress and motivation.
+- Enable users to track their fitness journey
+
+---
+
+## Features
+
+- **E-commerce Store:** Browse and purchase fitness products.
+- **Subscription Plans:** Subscribe to premium workout/nutrition plans.
+- **User Authentication:** Secure registration, login, and profile management.
+- **Role-Based Access:** Admin and member roles with tailored permissions.
+- **Community Progress:** Share and view progress updates.
+- **Product Reviews:** Leave and read reviews for products.
+- **Newsletter Signup:** Stay updated with the latest offers and tips.
+- **Responsive Design:** Mobile-friendly and accessible.
+- **SEO Optimized:** Meta tags, sitemap, robots.txt, and canonical URLs.
+- **Admin Dashboard:** Manage products, orders, users, and content.
+
+---
+
+## Screenshots
+
+### Home Page
+![Home Page](README-img/homepage.jpg)
+
+### Product Detail
+![Product Detail](README-img/product-detail.jpg)
+
+### Subscription Plans
+![Subscription Plans](README-img/subscriptions.jpg)
+
+### Community Progress
+![Community Progress](README-img/community.jpg)
+
+### User Profile
+![User Profile](README-img/profile.jpg)
+
+---
+
+## Data Schema
+
+### Entity Relationship Diagram
+
+[Click here to view the full Entity Relationship Diagram (PDF)](README-img/FitLife-Hub.pdf)
+
+### Main Models
+
+#### User & Profile
+- **User:** Django’s built-in user model.
+- **Profile:** Extends User with avatar, bio, and role (`member`, `admin`).
+
+#### Product
+- `name`, `description`, `price`, `image`, `stock`
+
+#### Order & OrderItem
+- **Order:** `user`, `created_at`, `status`, `total`
+- **OrderItem:** `order`, `product`, `quantity`, `price`
+
+#### Review
+- `product`, `user`, `rating`, `comment`, `created_at`
+
+#### Plan & Subscription
+- **Plan:** `name`, `description`, `price`, `interval`
+- **Subscription:** `user`, `plan`, `start_date`, `end_date`, `active`, `stripe_sub_id`
+
+#### ProgressUpdate
+- `user`, `title`, `content`, `image`, `created_at`
+
+#### NewsletterSubscriber
+- `email`, `subscribed_at`
+
+---
+
+## Business Model
+
+FitLife Hub operates as a hybrid e-commerce and subscription platform:
+
+- **Product Sales:** One-off purchases of fitness products.
+- **Subscription Plans:** Recurring revenue from premium plans.
+- **Community Engagement:** Drives retention and upselling.
+- **Newsletter Marketing:** Builds brand loyalty and reach.
+
+---
+
+## User Stories & Agile Process
+
+### Example User Stories
+
+- As a user, I want to register and log in so I can access my profile and orders.
+- As a user, I want to browse and purchase products securely.
+- As a user, I want to subscribe to workout plans for ongoing guidance.
+- As an admin, I want to manage products, orders, and users.
+
+### Agile Board
+
+![Agile Board Screenshot](README-img/agile-board.jpg)
+
+- User stories, tasks, and sprints are tracked in [GitHub Projects](https://github.com/users/LNoonan3/projects/7).
+
+---
+
+## UX Design
+
+### Design Process
+
+- diagram was using dbdiagram
+- Accessibility and mobile responsiveness were prioritized.
+- User flows were tested and refined based on feedback.
+
+## SEO & Marketing
+
+- **Meta Tags:** All pages include descriptive meta titles and descriptions.
+- **Canonical URLs:** Ensured for all main pages.
+- **Sitemap:** [`sitemap.xml`](sitemap.xml) included for search engines.
+- **robots.txt:** [`robots.txt`](robots.txt) controls crawler access.
+- **404 Page:** Custom 404 with redirect options.
+- **No Lorem Ipsum:** All content is meaningful and relevant.
+- **Facebook Business Page:** [FitLife Hub on Facebook](https://www.facebook.com/fitlife.hub.25/)
+- **Newsletter Signup:** Integrated on the homepage and footer.
+
+---
+
+## Testing
+
+### Automated Testing
+
+Automated tests are provided for all major components of the application:
+
+- **Location of tests:**
+  - `core/tests.py`
+  - `store/tests.py`
+  - `subscriptions/tests.py`
+  - `users/tests.py`
+
+- **Coverage:**
+  - **Models:** Creation and validation of all main models (e.g., Product, Order, Plan, Subscription, Profile, ProgressUpdate, NewsletterSubscriber).
+  - **Views:** Access control, CRUD operations, and correct template rendering for all main views.
+  - **Forms:** Validation and submission for user profile, reviews, newsletter signup, etc.
+  - **Authentication & Permissions:** Ensures only authorized users can access restricted views.
+
+- **How to run the tests:**
+  ```sh
+  python manage.py test
+  ```
+
+- **Sample Output:**
+  ```
+  Found 17 test(s).
+  Creating test database for alias 'default'...
+  System check identified no issues (0 silenced).
+  ..C:\Users\Lucy-Mai Noonan\OneDrive\Desktop\vscode-projects\FitLife-Hub-project5\.venv\Lib\site-packages\django\core\handlers\base.py:61: UserWarning: No directory at: C:\Users\Lucy-Mai Noonan\OneDrive\Desktop\vscode-projects\FitLife-Hub-project5\staticfiles\
+    mw_instance = middleware(adapted_handler)
+  ...............
+  ----------------------------------------------------------------------
+  Ran 17 tests in 26.338s
+
+  OK
+  Destroying test database for alias 'default'...
+  ```
+
+- **Example Test (from `store/tests.py`):**
+  ```python
+  def test_review_post(self):
+      self.client.login(username='testuser', password='pass')
+      url = reverse('store:product_detail', args=[self.product.pk])
+      data = {'rating': 5, 'comment': 'Excellent!'}
+      response = self.client.post(url, data)
+      self.assertEqual(response.status_code, 302)
+      review = Review.objects.get(product=self.product, user=self.user)
+      self.assertEqual(review.rating, 5)
+      self.assertEqual(review.comment, 'Excellent!')
+  ```
+
+### Manual Testing
+
+- All CRUD actions tested for immediate UI reflection.
+- Responsive design tested on Chrome, Firefox, Edge, and mobile devices.
+- Accessibility checked with Lighthouse and manual keyboard navigation.
+
+---
+
+## Deployment
+
+### Hosting
+
+- Deployed on [Heroku](https://fitlife-hub-22d9c7ccc31a.herokuapp.com/)
+- Static/media files managed via [AWS S3].
+
+### Deployment Steps
+
+1. Clone the repo:  
+   `git clone https://github.com/yourusername/fitlife-hub.git`
+2. Install dependencies:  
+   `pip install -r requirements.txt`
+3. Set environment variables (see `.env.example`).
+4. Run migrations:  
+   `python manage.py migrate`
+5. Collect static files:  
+   `python manage.py collectstatic`
+6. Deploy to your platform (Heroku).
+
+---
+
+## Configuration
+
+- **Procfile:** For Heroku deployment.
+- **requirements.txt:** All dependencies listed.
+- **env.py:** Environment variables (not committed).
+- **settings.py:** Centralized configuration for database, static, and media files.
+
+---
+
+## Credits
+
+- **Developed by:** Lucy-Mai Noonan
+- **Icons:** [FontAwesome](https://fontawesome.com)
+- **Images:** Unsplash, Pexels, and custom graphics.
+- **Acknowledgements:** Code Institute, Django, Bootstrap.
+
+---
+
+![FitLife Hub Logo](README-img/logo.jpg)
