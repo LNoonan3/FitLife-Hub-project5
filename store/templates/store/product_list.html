@@ -8,6 +8,8 @@
       <div class="card h-100">
         {% if product.image %}
           <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+        {% else %}
+          <img src="/media/products/{{ product.id }}.jpg" class="card-img-top" alt="{{ product.name }}">
         {% endif %}
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{ product.name }}</h5>
