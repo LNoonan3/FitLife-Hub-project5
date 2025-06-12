@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/subscriptions/plans/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/core/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/accounts/login/?next=/store/cart/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/accounts/signup/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/accounts/login/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/1/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/2/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/3/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/4/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/5/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/6/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/7/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/8/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/9/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/10/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/11/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/store/products/12/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/accounts/login/?next=/users/profile/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://fitlife-hub-22d9c7ccc31a.herokuapp.com/accounts/password/reset/</loc>
+  <lastmod>2025-06-12T18:11:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+
+
+</urlset>

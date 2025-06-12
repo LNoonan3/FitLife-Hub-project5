@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://fitlife-hub-22d9c7ccc31a.herokuapp.com/sitemap.xml
