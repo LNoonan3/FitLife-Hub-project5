@@ -5,6 +5,10 @@
   <div class="col-md-6">
     {% if product.image %}
       <img src="{{ product.image.url }}" class="product-detail-img" alt="{{ product.name }}">
+    {% else %}
+      <a href="">
+          <img class="card-img-top img-fluid" src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}">
+      </a>
     {% endif %}
   </div>
   <div class="col-md-6">
