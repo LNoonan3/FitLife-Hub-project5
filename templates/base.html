@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="FitLife Hub – Join our fitness community, subscribe to workout plans, and shop quality merchandise." />
+  <meta name="description" content="{% block meta_description %}FitLife Hub – Join our fitness community, subscribe to workout plans, and shop quality merchandise.{% endblock %}">
   <title>{% block title %}FitLife Hub{% endblock %}</title>
   <link rel="canonical" href="{{ request.build_absolute_uri }}" />
   <!-- Bootstrap CSS -->
