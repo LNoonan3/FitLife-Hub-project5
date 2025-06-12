@@ -22,13 +22,8 @@ def product_list(request):
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     reviews = product.reviews.all()
-    can_review = False
-    if request.user.is_authenticated:
-        can_review = OrderItem.objects.filter(
-            order__user=request.user,
-            product=product,
-            order__status='paid'
-        ).exists()
+    can_review = request.user.is_authenticated
+
     if request.method == 'POST' and can_review:
         form = ReviewForm(request.POST)
         if form.is_valid():

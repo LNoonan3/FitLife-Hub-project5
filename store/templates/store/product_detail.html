@@ -50,16 +50,12 @@
 {% endfor %}
 
 {% if user.is_authenticated %}
-  {% if can_review %}
-    <h4>Submit a Review</h4>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-primary">Submit Review</button>
-    </form>
-  {% else %}
-    <p class="text-muted">You can only review this product if you have purchased it.</p>
-  {% endif %}
+  <h4>Submit a Review</h4>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+  </form>
 {% else %}
   <p><a href="{% url 'account_login' %}">Log in</a> to post a review.</p>
 {% endif %}
