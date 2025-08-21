@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}{{ product.name }} – FitLife Hub{% endblock %}
 {% block content %}
 <div class="row">
   <div class="col-md-6">
     {% if product.image %}
-      <img src="{{ product.image.url }}" class="product-detail-img" alt="{{ product.name }}">
+      <img src="{% static 'img/products/' %}{{ product.image.name }}" class="product-detail-img" alt="{{ product.name }}">
     {% else %}
       <a href="">
-        <img src="/media/products/{{ product.id }}.jpg" class="product-detail-img" alt="{{ product.name }}">
+        <img src="{% static 'img/default-product.jpg' %}" class="product-detail-img" alt="{{ product.name }}">
       </a>
     {% endif %}
   </div>
