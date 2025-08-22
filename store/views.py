@@ -4,6 +4,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import Product, Order, OrderItem, Review
 from django.http import JsonResponse
 from django.urls import reverse
@@ -223,3 +224,53 @@ def oneoff_webhook(request):
                 unit_price=product.price
             )
     return HttpResponse(status=200)
+
+
+@login_required
+def review_create(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.save()
+            return redirect('store:product_detail', pk=review.product.pk)
+    else:
+        form = ReviewForm()
+    return render(request, 'store/review_form.html', {'form': form})
+
+
+@login_required
+def review_edit(request, pk):
+    review = get_object_or_404(Review, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect('store:product_detail', pk=review.product.pk)
+    else:
+        form = ReviewForm(instance=review)
+    return render(request, 'store/review_form.html', {'form': form})
+
+
+@login_required
+def review_delete(request, pk):
+    review = get_object_or_404(Review, pk=pk, user=request.user)
+    product_pk = review.product.pk
+    if request.method == 'POST':
+        review.delete()
+        return redirect('store:product_detail', pk=product_pk)
+    return render(request, 'store/review_confirm_delete.html', {'review': review})
+
+
+@staff_member_required
+def admin_dashboard(request):
+    from subscriptions.models import Subscription
+    products = Product.objects.all()
+    reviews = Review.objects.all()
+    subscriptions = Subscription.objects.all()
+    return render(request, 'admin_dashboard.html', {
+        'products': products,
+        'reviews': reviews,
+        'subscriptions': subscriptions,
+    })

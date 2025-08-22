@@ -37,6 +37,10 @@
 
 <h3 class="mb-4">Customer Reviews</h3>
 <div class="mb-4">
+  {% if review.user == request.user %}
+    <a href="{% url 'store:review_edit' review.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+    <a href="{% url 'store:review_delete' review.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+  {% endif %}
   {% if reviews %}
     {% for review in reviews %}
       <div class="card mb-3 shadow-sm border-0">
