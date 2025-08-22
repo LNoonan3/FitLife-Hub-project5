@@ -245,14 +245,15 @@ def review_create(request, product_pk):
 @login_required
 def review_edit(request, pk):
     review = get_object_or_404(Review, pk=pk, user=request.user)
+    product = review.product
     if request.method == 'POST':
         form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
             form.save()
-            return redirect('store:product_detail', pk=review.product.pk)
+            return redirect('store:product_detail', pk=product.pk)
     else:
         form = ReviewForm(instance=review)
-    return render(request, 'store/review_form.html', {'form': form, 'review': review})
+    return render(request, 'store/review_form.html', {'form': form, 'product': product})
 
 
 @login_required
