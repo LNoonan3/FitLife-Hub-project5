@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>{% if form.instance.pk %}Edit Review{% else %}Add Review{% endif %}</h2>
+<h2>Edit Review</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit" class="btn btn-success">Save</button>
+  <a href="{% url 'store:product_detail' review.product.pk %}" class="btn btn-secondary">Cancel</a>
 </form>
 {% endblock %}

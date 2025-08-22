@@ -35,43 +35,42 @@
 
 <hr>
 
-<h3 class="mb-4">Customer Reviews</h3>
-<div class="mb-4">
-  {% if review.user == request.user %}
-    <a href="{% url 'store:review_edit' review.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-    <a href="{% url 'store:review_delete' review.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-  {% endif %}
-  {% if reviews %}
-    {% for review in reviews %}
-      <div class="card mb-3 shadow-sm border-0">
-        <div class="card-body d-flex align-items-start">
-          <div class="me-3">
-            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:48px; height:48px; font-size:1.3rem;">
-              {{ review.user.username|slice:":1"|upper }}
-            </div>
-          </div>
-          <div class="flex-grow-1">
-            <div class="d-flex align-items-center mb-1">
-              <strong>{{ review.user.username }}</strong>
-              <span class="ms-3">
-                {% for i in "12345"|make_list %}
-                  {% if forloop.counter <= review.rating %}
-                    <i class="fa-solid fa-star text-warning"></i>
-                  {% else %}
-                    <i class="fa-regular fa-star text-secondary"></i>
-                  {% endif %}
-                {% endfor %}
-              </span>
-            </div>
-            <div class="text-muted small mb-2">{{ review.created_at|date:"M d, Y" }}</div>
-            <p class="mb-0">{{ review.comment }}</p>
+<h3 class="mt-5 mb-3 fw-bold">Customer Reviews</h3>
+<div class="review-list">
+  {% for review in reviews %}
+    <div class="card mb-3 shadow-sm border-0">
+      <div class="card-body d-flex align-items-start">
+        <div class="me-3">
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:48px; height:48px; font-size:1.3rem;">
+            {{ review.user.username|slice:":1"|upper }}
           </div>
         </div>
+        <div class="flex-grow-1">
+          <div class="d-flex align-items-center mb-1">
+            <span class="fw-bold me-2">{{ review.user.username }}</span>
+            <span>
+              {% for i in "12345"|slice:":review.rating"|make_list %}
+                <span class="text-warning">&#9733;</span>
+              {% endfor %}
+              {% for i in "12345"|slice:"review.rating:"|make_list %}
+                <span class="text-secondary">&#9733;</span>
+              {% endfor %}
+            </span>
+          </div>
+          <div class="text-muted mb-2" style="font-size:0.95rem;">{{ review.created_at|date:"M d, Y" }}</div>
+          <div>{{ review.comment }}</div>
+          {% if review.user == request.user %}
+            <div class="mt-2">
+              <a href="{% url 'store:review_edit' review.pk %}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+              <a href="{% url 'store:review_delete' review.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </div>
+          {% endif %}
+        </div>
       </div>
-    {% endfor %}
-  {% else %}
+    </div>
+  {% empty %}
     <p class="text-muted">No reviews yet. Be the first to review this product!</p>
-  {% endif %}
+  {% endfor %}
 </div>
 
 {% if user.is_authenticated %}

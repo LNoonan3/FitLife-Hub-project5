@@ -250,7 +250,7 @@ def review_edit(request, pk):
             return redirect('store:product_detail', pk=review.product.pk)
     else:
         form = ReviewForm(instance=review)
-    return render(request, 'store/review_form.html', {'form': form})
+    return render(request, 'store/review_form.html', {'form': form, 'review': review})
 
 
 @login_required
