@@ -36,6 +36,22 @@
 <hr>
 
 <h3 class="mt-5 mb-3 fw-bold">Customer Reviews</h3>
+
+{% if user.is_authenticated %}
+  <div class="card mb-4 shadow-sm border-0" style="max-width: 600px;">
+    <div class="card-body">
+      <h5 class="card-title mb-3">Submit Your Review</h5>
+      <form method="post" action="{% url 'store:review_create' product.pk %}">
+        {% csrf_token %}
+        {{ review_form.as_p }}
+        <button type="submit" class="btn btn-success">Submit Review</button>
+      </form>
+    </div>
+  </div>
+{% else %}
+  <p class="text-muted mb-4">Please <a href="{% url 'account_login' %}">log in</a> to submit a review.</p>
+{% endif %}
+
 <div class="review-list">
   {% for review in reviews %}
     <div class="card mb-3 shadow-sm border-0">
@@ -72,28 +88,4 @@
     <p class="text-muted">No reviews yet. Be the first to review this product!</p>
   {% endfor %}
 </div>
-
-{% if user.is_authenticated %}
-  <div class="card shadow-sm border-0 mb-4">
-    <div class="card-body">
-      <h4 class="card-title mb-3">Submit a Review</h4>
-      <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-          <label for="id_rating" class="form-label">Rating</label>
-          {{ form.rating }}
-        </div>
-        <div class="mb-3">
-          <label for="id_comment" class="form-label">Comment</label>
-          {{ form.comment }}
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-      </form>
-    </div>
-  </div>
-{% else %}
-  <div class="alert alert-info">
-    <a href="{% url 'account_login' %}">Log in</a> to post a review.
-  </div>
-{% endif %}
 {% endblock %}

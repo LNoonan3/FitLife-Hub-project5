@@ -227,17 +227,19 @@ def oneoff_webhook(request):
 
 
 @login_required
-def review_create(request):
+def review_create(request, product_pk):
+    product = get_object_or_404(Product, pk=product_pk)
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
+            review.product = product
             review.user = request.user
             review.save()
-            return redirect('store:product_detail', pk=review.product.pk)
+            return redirect('store:product_detail', pk=product_pk)
     else:
         form = ReviewForm()
-    return render(request, 'store/review_form.html', {'form': form})
+    return render(request, 'store/review_form.html', {'form': form, 'product': product})
 
 
 @login_required
