@@ -16,7 +16,7 @@
     <h2>{{ product.name }}</h2>
     <p>{{ product.description }}</p>
     <h4>€{{ product.price|floatformat:2 }}</h4>
-    <form action="{% url 'store:oneoff_checkout' product.pk %}" method="post" class="with-spinner">
+    <form action="{% url 'store:buy_now' product.pk %}" method="post" class="with-spinner">
       {% csrf_token %}
       <button type="submit" class="btn btn-success mb-2">
         Buy Now – €{{ product.price|floatformat:2 }}

@@ -117,6 +117,16 @@ def create_payment_intent(request):
         return JsonResponse({'error': str(e)}, status=400)
 
 
+@require_POST
+@login_required
+def buy_now(request, pk):
+    """Add product to cart and redirect to checkout."""
+    cart = request.session.get('cart', {})
+    cart[str(pk)] = 1  # Set quantity to 1 for Buy Now
+    request.session['cart'] = cart
+    return redirect('store:checkout')
+
+
 @login_required
 def checkout_view(request):
     cart = request.session.get('cart', {})

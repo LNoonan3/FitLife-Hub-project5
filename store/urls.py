@@ -19,6 +19,7 @@ urlpatterns = [
     path('reviews/create/<int:product_pk>/', views.review_create, name='review_create'),
     path('reviews/<int:pk>/edit/', views.review_edit, name='review_edit'),
     path('create-payment-intent/', views.create_payment_intent, name='create_payment_intent'),
+    path('buy-now/<int:pk>/', views.buy_now, name='buy_now'),
     path('reviews/<int:pk>/delete/', views.review_delete, name='review_delete'),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
 ]
