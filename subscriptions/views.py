@@ -1,11 +1,13 @@
 import stripe
 from datetime import date, timedelta
-from dateutil.relativedelta import relativedelta 
+from .forms import SubscriptionCheckoutForm
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -161,3 +163,45 @@ def stripe_webhook(request):
             print("Subscription not found for cancel:", stripe_sub_id)
 
     return HttpResponse(status=200)
+
+
+@login_required
+def plan_checkout(request, plan_id):
+    plan = get_object_or_404(Plan, pk=plan_id, is_active=True)
+    form = SubscriptionCheckoutForm(initial={'email': request.user.email, 'full_name': request.user.get_full_name()})
+    return render(request, 'subscriptions/plan_checkout.html', {'plan': plan, 'form': form, 'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+
+
+@require_POST
+@login_required
+def create_subscription(request, plan_id):
+    import stripe
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    plan = get_object_or_404(Plan, pk=plan_id, is_active=True)
+    data = request.POST
+    payment_method_id = data.get('payment_method_id')
+    email = data.get('email')
+    full_name = data.get('full_name')
+
+    if not payment_method_id or not email or not full_name:
+        print("Missing required POST data:", payment_method_id, email, full_name)
+        return JsonResponse({'error': 'Missing required fields.'}, status=400)
+
+    try:
+        customer = stripe.Customer.create(
+            email=email,
+            name=full_name,
+            metadata={'user_id': request.user.id}
+        )
+        stripe.PaymentMethod.attach(payment_method_id, customer=customer.id)
+        stripe.Customer.modify(customer.id, invoice_settings={'default_payment_method': payment_method_id})
+        subscription = stripe.Subscription.create(
+            customer=customer.id,
+            items=[{'price': plan.stripe_price_id}],
+            expand=['latest_invoice.payment_intent'],
+        )
+        client_secret = subscription.latest_invoice.payment_intent.client_secret
+        return JsonResponse({'clientSecret': client_secret})
+    except Exception as e:
+        print("Stripe error:", str(e))
+        return JsonResponse({'error': str(e)}, status=400)

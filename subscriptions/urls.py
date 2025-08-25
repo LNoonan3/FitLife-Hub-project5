@@ -10,4 +10,6 @@ urlpatterns = [
     path('cancel/', views.subscription_cancel, name='subscription_cancel'),
     path('my/', views.my_subscription, name='my_subscription'),
     path('cancel/<int:sub_id>/', views.cancel_subscription, name='cancel_subscription'),
+    path('plan-checkout/<int:plan_id>/', views.plan_checkout, name='plan_checkout'),
+    path('create-subscription/<int:plan_id>/', views.create_subscription, name='create_subscription'),
 ]
