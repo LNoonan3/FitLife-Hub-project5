@@ -129,6 +129,15 @@ html, body {
     min-width: 70px;
 }
 
+/* checkout */
+.checkout-card {
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  background: #fff;
+  margin-bottom: 2rem;
+  padding: 2rem;
+}
+
 /* Buttons */
 .btn-success .btn-primary {
   border-radius: 2rem;
@@ -279,4 +288,7 @@ form .form-group {
   .card-body {
         padding: 1.1rem;
     }
+  .checkout-card {
+    padding: 1rem;
+  }
 }

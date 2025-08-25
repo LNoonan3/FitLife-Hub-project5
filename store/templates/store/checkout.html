@@ -1,124 +1,88 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Checkout – FitLife Hub{% endblock %}
 {% block content %}
-<h2 class="mb-4">Checkout</h2>
-{% if items %}
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <table class="table align-middle mb-0">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th class="text-center">Quantity</th>
-            <th class="text-end">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in items %}
-          <tr>
-            <td>{{ item.product.name }}</td>
-            <td class="text-center">{{ item.quantity }}</td>
-            <td class="text-end">€{{ item.line_total|floatformat:2 }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-        <tfoot>
-          <tr>
-            <th colspan="2" class="text-end">Grand Total:</th>
-            <th class="text-end">€{{ total|floatformat:2 }}</th>
-          </tr>
-        </tfoot>
-      </table>
-      </div>
-    </div>
-    <div class="card checkout-card shadow-sm border-0">
-      <div class="card-body">
-        <h4 class="mb-3 fw-bold text-center">Your Details</h4>
-        <form id="checkout-form" method="post" novalidate class="checkout-form">
-          {% csrf_token %}
-          {% for field in form %}
-            <div class="mb-3">
-              <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
-              {{ field }}
-              {% if field.errors %}
-                <div class="text-danger small mt-1">
-                  {{ field.errors|striptags }}
-                </div>
-              {% endif %}
-            </div>
-          {% endfor %}
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Card Details</label>
-            <div id="card-element" class="form-control"></div>
-            <div id="card-errors" class="text-danger mt-2"></div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+      <h2 class="mb-4 fw-bold text-center">Checkout</h2>
+      {% if items %}
+        <div class="card checkout-card mb-4 shadow-sm border-0">
+          <div class="card-body">
+            <h4 class="mb-3 fw-bold">Order Summary</h4>
+            <table class="table checkout-table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th class="text-center">Quantity</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in items %}
+                <tr>
+                  <td>{{ item.product.name }}</td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-end">€{{ item.line_total|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="2" class="text-end">Grand Total:</th>
+                  <th class="text-end text-primary">€{{ total|floatformat:2 }}</th>
+                </tr>
+              </tfoot>
+            </table>
           </div>
-          <button type="submit" class="btn btn-primary btn-lg w-100 mt-3" id="pay-btn">Confirm &amp; Pay</button>
-          <a href="{% url 'store:cart' %}" class="btn btn-secondary w-100 mt-2">Back to Cart</a>
-        </form>
-      </div>
+        </div>
+        <div class="card checkout-card shadow-sm border-0">
+          <div class="card-body">
+            <h4 class="mb-3 fw-bold text-center">Your Details & Payment</h4>
+            <form id="checkout-form" method="post" novalidate class="checkout-form">
+              {% csrf_token %}
+              <div class="row g-4">
+                <div class="col-md-6">
+                  {% for field in form %}
+                    <div class="mb-3">
+                      <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                      {{ field }}
+                      {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                          {{ field.errors|striptags }}
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Card Details</label>
+                    <div id="card-element" class="form-control"></div>
+                    <div id="card-errors" class="text-danger mt-2"></div>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-lg w-100 mt-3" id="pay-btn">
+                    <span id="pay-btn-text">Confirm &amp; Pay</span>
+                    <span id="pay-btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                  </button>
+                  <a href="{% url 'store:cart' %}" class="btn btn-secondary w-100 mt-2">Back to Cart</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      {% else %}
+        <div class="alert alert-warning text-center">Your cart is empty. <a href="{% url 'store:product_list' %}">Browse products</a>.</div>
+      {% endif %}
     </div>
-  {% else %}
-    <div class="alert alert-warning text-center">Your cart is empty. <a href="{% url 'store:product_list' %}">Browse products</a>.</div>
-  {% endif %}
+  </div>
 </div>
-<script src="https://js.stripe.com/v3/"></script>
 <script>
-  const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
-  const elements = stripe.elements();
-  const card = elements.create('card');
-  card.mount('#card-element');
-
-  card.on('change', function(event) {
-    document.getElementById('card-errors').textContent = event.error ? event.error.message : '';
-  });
-
-  document.getElementById('checkout-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    document.getElementById('pay-btn').disabled = true;
-
-    // Gather form data
-    const formData = new FormData(this);
-    const response = await fetch("{% url 'store:create_payment_intent' %}", {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": formData.get('csrfmiddlewaretoken'),
-      },
-      body: formData
-    });
-    const data = await response.json();
-
-    if (data.error) {
-      document.getElementById('card-errors').textContent = data.error;
-      document.getElementById('pay-btn').disabled = false;
-      return;
-    }
-
-    const { clientSecret } = data;
-
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: card,
-        billing_details: {
-          name: formData.get('full_name'),
-          email: "{{ user.email }}",
-          address: {
-            line1: formData.get('address'),
-            city: formData.get('city'),
-            postal_code: formData.get('postcode'),
-            country: formData.get('country')
-          }
-        }
-      }
-    });
-
-    if (result.error) {
-      document.getElementById('card-errors').textContent = result.error.message;
-      document.getElementById('pay-btn').disabled = false;
-    } else {
-      if (result.paymentIntent.status === 'succeeded') {
-        window.location.href = "{% url 'store:checkout_success' %}";
-      }
-    }
-  });
+  const STRIPE_PUBLIC_KEY = "{{ STRIPE_PUBLIC_KEY }}";
+  const USER_EMAIL = "{{ user.email }}";
+  const CREATE_PAYMENT_INTENT_URL = "{% url 'store:create_payment_intent' %}";
+  const CHECKOUT_SUCCESS_URL = "{% url 'store:checkout_success' %}";
 </script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
 {% endblock %}
