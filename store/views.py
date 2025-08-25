@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import ReviewForm
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
+from .forms import CheckoutForm
 
 
 def product_list(request):
@@ -124,20 +125,34 @@ def checkout_view(request):
         })
 
     if request.method == 'POST':
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            customer_email=request.user.email,
-            line_items=line_items,
-            mode='payment',
-            success_url=request.build_absolute_uri(reverse('store:checkout_success')),
-            cancel_url=request.build_absolute_uri(reverse('store:checkout_cancel')),
-            metadata={'user_id': request.user.id, 'cart': str(cart)},
-        )
-        return redirect(session.url, code=303)
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            # You can save the details to the order or pass to Stripe metadata
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                customer_email=request.user.email,
+                line_items=line_items,
+                mode='payment',
+                success_url=request.build_absolute_uri(reverse('store:checkout_success')),
+                cancel_url=request.build_absolute_uri(reverse('store:checkout_cancel')),
+                metadata={
+                    'user_id': request.user.id,
+                    'cart': str(cart),
+                    'full_name': form.cleaned_data['full_name'],
+                    'address': form.cleaned_data['address'],
+                    'city': form.cleaned_data['city'],
+                    'postcode': form.cleaned_data['postcode'],
+                    'country': form.cleaned_data['country'],
+                },
+            )
+            return redirect(session.url, code=303)
+    else:
+        form = CheckoutForm()
 
     return render(request, 'store/checkout.html', {
         'items': items,
         'total': total,
+        'form': form,
     })
 
 
