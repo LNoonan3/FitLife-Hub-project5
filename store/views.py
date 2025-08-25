@@ -97,6 +97,26 @@ def cart_remove(request, pk):
     return redirect('store:cart')
 
 
+@require_POST
+@login_required
+def create_payment_intent(request):
+    cart = request.session.get('cart', {})
+    total = 0
+    for prod_id, qty in cart.items():
+        product = Product.objects.get(pk=prod_id)
+        total += product.price * qty
+
+    try:
+        intent = stripe.PaymentIntent.create(
+            amount=int(total * 100),
+            currency='eur',
+            metadata={'user_id': request.user.id, 'cart': str(cart)},
+        )
+        return JsonResponse({'clientSecret': intent.client_secret})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
 @login_required
 def checkout_view(request):
     cart = request.session.get('cart', {})
