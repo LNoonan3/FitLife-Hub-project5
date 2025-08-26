@@ -13,6 +13,7 @@ from .forms import ReviewForm
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
 from .forms import CheckoutForm
+from store.utils import send_order_confirmation_email
 
 
 def product_list(request):
@@ -255,6 +256,7 @@ def oneoff_webhook(request):
                 OrderItem.objects.create(
                     order=order, product=product, quantity=qty, unit_price=product.price
                 )
+            send_order_confirmation_email(user, order)  # <-- Send email here
         else:
             product_id = sess['metadata'].get('product_id')
             user = User.objects.get(id=user_id)
@@ -268,6 +270,7 @@ def oneoff_webhook(request):
                 quantity=1,
                 unit_price=product.price
             )
+            send_order_confirmation_email(user, order)  # <-- Send email here
     return HttpResponse(status=200)
 
 
