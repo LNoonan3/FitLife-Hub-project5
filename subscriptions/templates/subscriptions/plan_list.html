@@ -53,7 +53,12 @@
               Already Subscribed
             </button>
           {% else %}
-            <form action="{% url 'subscriptions:plan_checkout' plan.id %}" method="get" class="d-inline">
+            <form
+              action="{% url 'subscriptions:subscribe_plan' plan.id %}"
+              method="post"
+              class="d-inline with-spinner"
+            >
+              {% csrf_token %}
               <button type="submit" class="btn btn-primary w-100">
                 Subscribe — €{{ plan.price|floatformat:2 }}/{{ plan.interval }}
               </button>
