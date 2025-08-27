@@ -17,15 +17,17 @@
           {% endif %}
           <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary btn-sm">Edit Profile</a>
         </div>
-        <div>
-          <h3>{{ user.username }}</h3>
-          <p><strong><i class="fa-solid fa-envelope me-1"></i>Email:</strong> {{ user.email }}</p>
-          <p><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</p>
-          <p><strong><i class="fa-solid fa-bullseye me-1"></i>Fitness Goal:</strong> {{ user.profile.fitness_goal|default:"Not specified." }}</p>
-          <a href="{% url 'account_change_password' %}" class="btn btn-link btn-sm px-0">Change Password</a>
+        <div class="flex-grow-1">
+          <h3 class="mb-2">{{ user.username }}</h3>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2"><strong><i class="fa-solid fa-envelope me-1"></i>Email:</strong> {{ user.email }}</li>
+            <li class="mb-2"><strong>Bio:</strong> {{ user.profile.bio|default:"No bio yet." }}</li>
+            <li class="mb-2"><strong><i class="fa-solid fa-bullseye me-1"></i>Fitness Goal:</strong> {{ user.profile.fitness_goal|default:"Not specified." }}</li>
+          </ul>
+          <a href="{% url 'account_change_password' %}" class="btn btn-link btn-sm px-0 mt-2">Change Password</a>
         </div>
-  </div>
-</div>
+      </div>
+    </div>
 
 <div class="card shadow-sm mb-4">
   <div class="card-body">
