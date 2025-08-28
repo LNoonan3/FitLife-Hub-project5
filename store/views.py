@@ -120,6 +120,13 @@ def create_payment_intent(request):
 
 @require_POST
 @login_required
+def clear_cart(request):
+    request.session['cart'] = {}
+    return JsonResponse({'message': 'Cart cleared'})
+
+
+@require_POST
+@login_required
 def buy_now(request, pk):
     """Add product to cart and redirect to checkout."""
     cart = request.session.get('cart', {})
