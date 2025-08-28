@@ -20,6 +20,13 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from subscriptions.views import stripe_webhook
+from django.contrib.sitemaps.views import sitemap
+from core.sitemaps import StaticViewSitemap
+
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
 
 
 urlpatterns = [
@@ -30,6 +37,7 @@ urlpatterns = [
     path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
     path('core/', include('core.urls', namespace='core')),
     path('webhook/', stripe_webhook, name='stripe_webhook'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
 if settings.DEBUG:
