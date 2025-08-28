@@ -1,5 +1,5 @@
 import stripe
-from datetime import date, timedelta
+# from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
@@ -9,7 +9,6 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from decimal import Decimal
 from django.contrib.auth.models import User
 from .models import Subscription, Plan
 
@@ -22,10 +21,16 @@ def plan_list(request):
     user_active_plan_ids = []
     if request.user.is_authenticated:
         user_active_plan_ids = list(
-            Subscription.objects.filter(user=request.user, status='active').values_list('plan_id', flat=True)
+            Subscription.objects.filter(
+                user=request.user,
+                status='active'
+            ).values_list('plan_id', flat=True)
         )
     if request.GET.get('subscribed') == '1':
-        messages.success(request, "Thank you! Your subscription was successful.")
+        messages.success(
+            request,
+            ("Thank you! Your subscription was successful.")
+        )
     return render(
         request,
         'subscriptions/plan_list.html',
@@ -39,13 +44,24 @@ def plan_list(request):
 @login_required
 def subscribe_plan(request, plan_id):
     plan = get_object_or_404(Plan, pk=plan_id, is_active=True)
-    existing = Subscription.objects.filter(user=request.user, plan=plan, status='active').first()
+    existing = Subscription.objects.filter(
+        user=request.user,
+        plan=plan,
+        status='active'
+    ).first()
     if existing:
-        messages.error(request, "You already have an active subscription to this plan.")
+        messages.error(
+            request,
+            ("You already have an active subscription to this plan.")
+        )
         return redirect('subscriptions:my_subscription')
 
     if not plan.stripe_price_id:
-        messages.error(request, "This plan is not configured for Stripe subscriptions.")
+        messages.error(
+            request,
+            ("This plan is not configured for Stripe "
+             "subscriptions.")
+        )
         return redirect('subscriptions:plan_list')
     session = stripe.checkout.Session.create(
         customer_email=request.user.email,
@@ -75,9 +91,19 @@ def cancel_subscription(request, sub_id):
         try:
             stripe.Subscription.delete(subscription.stripe_sub_id)
         except Exception:
-            messages.error(request, "Could not cancel on Stripe. Please contact support.")
+            messages.error(
+                request,
+                ("Could not cancel on Stripe. "
+                 "Please contact support.")
+            )
             return redirect('subscriptions:my_subscription')
-        messages.success(request, "Your subscription has been canceled. You will retain access until the end of your billing period.")
+        messages.success(
+            request,
+            (
+                "Your subscription has been canceled. "
+                "You will retain access until the end of your billing period."
+            )
+        )
     else:
         messages.info(request, "Subscription is already canceled.")
     return redirect('subscriptions:my_subscription')
@@ -85,8 +111,17 @@ def cancel_subscription(request, sub_id):
 
 @login_required
 def my_subscription(request):
-    subscription = Subscription.objects.filter(user=request.user, status='active').order_by('-start_date').first()
-    return render(request, 'subscriptions/my_subscription.html', {'subscription': subscription})
+    subscription = (
+        Subscription.objects
+        .filter(user=request.user, status='active')
+        .order_by('-start_date')
+        .first()
+    )
+    return render(
+        request,
+        'subscriptions/my_subscription.html',
+        {'subscription': subscription}
+    )
 
 
 def subscription_success(request):

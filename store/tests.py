@@ -8,7 +8,10 @@ User = get_user_model()
 
 class StoreTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='pass')
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='pass'
+        )
         self.product = Product.objects.create(
             name="Test Product",
             description="A great product.",
@@ -29,8 +32,17 @@ class StoreTests(TestCase):
         self.assertContains(response, self.product.description)
 
     def test_order_creation(self):
-        order = Order.objects.create(user=self.user, total_cents=1999, status='paid')
-        OrderItem.objects.create(order=order, product=self.product, quantity=1, unit_price=self.product.price)
+        order = Order.objects.create(
+            user=self.user,
+            total_cents=1999,
+            status='paid'
+        )
+        OrderItem.objects.create(
+            order=order,
+            product=self.product,
+            quantity=1,
+            unit_price=self.product.price
+        )
         self.assertEqual(order.items.count(), 1)
         self.assertEqual(order.items.first().product, self.product)
 

@@ -1,5 +1,3 @@
-from django.urls import path
-from .views import signup_view, profile_edit
 from django.urls import path, include
 from . import views
 

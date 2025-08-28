@@ -171,8 +171,12 @@ def checkout_view(request):
                 customer_email=request.user.email,
                 line_items=line_items,
                 mode='payment',
-                success_url=request.build_absolute_uri(reverse('store:checkout_success')),
-                cancel_url=request.build_absolute_uri(reverse('store:checkout_cancel')),
+                success_url=request.build_absolute_uri(
+                    reverse('store:checkout_success')
+                ),
+                cancel_url=request.build_absolute_uri(
+                    reverse('store:checkout_cancel')
+                ),
                 metadata={
                     'user_id': request.user.id,
                     'cart': str(cart),
@@ -257,11 +261,18 @@ def oneoff_webhook(request):
                 product = Product.objects.get(pk=prod_id)
                 line_total = product.price * qty
                 total += line_total
-            order = Order.objects.create(user=user, total_cents=int(total * 100), status='paid')
+            order = Order.objects.create(
+                user=user,
+                total_cents=int(total * 100),
+                status='paid'
+            )
             for prod_id, qty in cart.items():
                 product = Product.objects.get(pk=prod_id)
                 OrderItem.objects.create(
-                    order=order, product=product, quantity=qty, unit_price=product.price
+                    order=order,
+                    product=product,
+                    quantity=qty,
+                    unit_price=product.price
                 )
             send_order_confirmation_email(user, order)  # <-- Send email here
         else:
@@ -294,7 +305,14 @@ def review_create(request, product_pk):
             return redirect('store:product_detail', pk=product_pk)
     else:
         form = ReviewForm()
-    return render(request, 'store/review_form.html', {'form': form, 'product': product})
+    return render(
+        request,
+        'store/review_form.html',
+        {
+            'form': form,
+            'product': product
+        }
+    )
 
 
 @login_required
@@ -308,7 +326,11 @@ def review_edit(request, pk):
             return redirect('store:product_detail', pk=product.pk)
     else:
         form = ReviewForm(instance=review)
-    return render(request, 'store/review_form.html', {'form': form, 'product': product})
+    return render(
+        request,
+        'store/review_form.html',
+        {'form': form, 'product': product}
+    )
 
 
 @login_required
@@ -318,7 +340,11 @@ def review_delete(request, pk):
     if request.method == 'POST':
         review.delete()
         return redirect('store:product_detail', pk=product_pk)
-    return render(request, 'store/review_confirm_delete.html', {'review': review})
+    return render(
+        request,
+        'store/review_confirm_delete.html',
+        {'review': review}
+    )
 
 
 @staff_member_required

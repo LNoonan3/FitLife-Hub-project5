@@ -9,7 +9,10 @@ User = get_user_model()
 
 class SubscriptionModelTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='subuser', password='pass')
+        self.user = User.objects.create_user(
+            username='subuser',
+            password='pass'
+        )
         self.plan = Plan.objects.create(
             name='Monthly',
             description='Monthly plan',
@@ -33,7 +36,10 @@ class SubscriptionModelTests(TestCase):
 
 class SubscriptionViewTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='subuser', password='pass')
+        self.user = User.objects.create_user(
+            username='subuser',
+            password='pass'
+        )
         self.plan = Plan.objects.create(
             name='Monthly',
             description='Monthly plan',
@@ -68,7 +74,7 @@ class SubscriptionViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.plan.name)
         self.assertContains(response, "Active")
-        
+
     def test_subscribe_plan_view_prevents_duplicate_subscription(self):
         Subscription.objects.create(
             user=self.user,
@@ -79,9 +85,17 @@ class SubscriptionViewTests(TestCase):
         )
         url = reverse('subscriptions:subscribe_plan', args=[self.plan.id])
         response = self.client.post(url)
-        self.assertRedirects(response, reverse('subscriptions:my_subscription'))
+        self.assertRedirects(
+            response,
+            reverse('subscriptions:my_subscription')
+        )
         messages = list(response.wsgi_request._messages)
-        self.assertTrue(any("already have an active subscription" in str(m) for m in messages))
+        self.assertTrue(
+            any(
+                "already have an active subscription" in str(m)
+                for m in messages
+            )
+        )
 
     def test_subscribe_plan_view_invalid_plan(self):
         url = reverse('subscriptions:subscribe_plan', args=[9999])
@@ -101,7 +115,10 @@ class SubscriptionViewTests(TestCase):
         with patch('stripe.Subscription.delete') as mock_delete:
             mock_delete.return_value = None
             response = self.client.post(url)
-        self.assertRedirects(response, reverse('subscriptions:my_subscription'))
+        self.assertRedirects(
+            response,
+            reverse('subscriptions:my_subscription')
+        )
         sub.refresh_from_db()
         self.assertEqual(sub.status, 'active')
 

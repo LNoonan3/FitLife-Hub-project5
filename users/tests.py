@@ -8,7 +8,11 @@ User = get_user_model()
 
 class UserProfileTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', email='test@example.com', password='pass')
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='pass'
+        )
 
     def test_profile_created_on_user_creation(self):
         self.assertTrue(Profile.objects.filter(user=self.user).exists())
@@ -55,7 +59,10 @@ class UserProfileTests(TestCase):
         form = response.context['form']
         self.assertTrue(form.errors)
         self.assertIn('fitness_goal', form.errors)
-        self.assertIn('Ensure this value has at most 100 characters', form.errors['fitness_goal'][0])
+        self.assertIn(
+            'Ensure this value has at most 100 characters',
+            form.errors['fitness_goal'][0]
+        )
 
     def test_profile_str_method(self):
         profile = Profile.objects.get(user=self.user)

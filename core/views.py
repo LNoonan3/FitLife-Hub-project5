@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import ProgressUpdate, NewsletterSubscriber
+from .models import ProgressUpdate
 from .forms import ProgressUpdateForm, NewsletterForm
 
 
@@ -32,7 +32,11 @@ def progress_delete(request, pk):
         update.delete()
         messages.success(request, "Your progress update was deleted.")
         return redirect('core:progress_list')
-    return render(request, 'core/progress_confirm_delete.html', {'update': update})
+    return render(
+        request,
+        'core/progress_confirm_delete.html',
+        {'update': update}
+    )
 
 
 def newsletter_subscribe(request):

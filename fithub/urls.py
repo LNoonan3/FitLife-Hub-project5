@@ -34,11 +34,22 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('users/', include('users.urls', namespace='users')),
     path('store/', include('store.urls', namespace='store')),
-    path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
+    path(
+        'subscriptions/',
+        include('subscriptions.urls', namespace='subscriptions')
+    ),
     path('core/', include('core.urls', namespace='core')),
     path('webhook/', stripe_webhook, name='stripe_webhook'),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path(
+        'sitemap.xml',
+        sitemap,
+        {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'
+    ),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
