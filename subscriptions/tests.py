@@ -68,3 +68,51 @@ class SubscriptionViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.plan.name)
         self.assertContains(response, "Active")
+        
+    def test_subscribe_plan_view_prevents_duplicate_subscription(self):
+        Subscription.objects.create(
+            user=self.user,
+            plan=self.plan,
+            stripe_sub_id='sub_test123',
+            start_date='2025-01-01',
+            status='active'
+        )
+        url = reverse('subscriptions:subscribe_plan', args=[self.plan.id])
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse('subscriptions:my_subscription'))
+        messages = list(response.wsgi_request._messages)
+        self.assertTrue(any("already have an active subscription" in str(m) for m in messages))
+
+    def test_subscribe_plan_view_invalid_plan(self):
+        url = reverse('subscriptions:subscribe_plan', args=[9999])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_cancel_subscription_view(self):
+        sub = Subscription.objects.create(
+            user=self.user,
+            plan=self.plan,
+            stripe_sub_id='sub_test456',
+            start_date='2025-01-01',
+            status='active'
+        )
+        url = reverse('subscriptions:cancel_subscription', args=[sub.id])
+        from unittest.mock import patch
+        with patch('stripe.Subscription.delete') as mock_delete:
+            mock_delete.return_value = None
+            response = self.client.post(url)
+        self.assertRedirects(response, reverse('subscriptions:my_subscription'))
+        sub.refresh_from_db()
+        self.assertEqual(sub.status, 'active')
+
+    def test_subscription_success_view(self):
+        url = reverse('subscriptions:subscription_success')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Subscription")
+
+    def test_subscription_cancel_view(self):
+        url = reverse('subscriptions:subscription_cancel')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "cancelled")
