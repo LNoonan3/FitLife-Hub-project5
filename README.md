@@ -142,13 +142,16 @@ Where to find configuration in this repo
 
 ## Mockups & Wireframes
 
-- Wireframes and user flows were created using dbdiagram and Figma.
+- Wireframes and user flows were created using dbdiagram and Balsamiq Wireframes.
 - Accessibility and mobile responsiveness were prioritized.
 - User flows were tested and refined based on feedback.
 
 ### Entity Relationship Diagram
 
-[![Entity Relationship Diagram](README-img/FitLife-Hub.jpg)]
+![Entity Relationship Diagram](README-img/FitLife-Hub.jpg)
+
+### Wireframe
+![Home page Wireframe](README-img/Wireframe.png)
 
 ---
 
