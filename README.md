@@ -11,6 +11,7 @@
 ## Table of Contents
 
 - [Project Purpose & Target Audience](#project-purpose--target-audience)
+- [Intent, Data Handling & Security](#intent-data-handling--security)
 - [Features](#features)
 - [Screenshots](#screenshots)
 - [Mockups & Wireframes](#mockups--wireframes)
@@ -27,25 +28,70 @@
 
 ## Project Purpose & Target Audience
 
-FitLife Hub is the ultimate destination for anyone passionate about health and fitness, whether you're just starting out or a seasoned athlete. Our platform goes beyond a typical e-commerce site, combining premium fitness products, expert workout plans, and a vibrant community in one seamless experience.
+FitLife Hub was built to solve a real problem: fitness seekers and small fitness brands lack a single, trusted place that combines commerce, ongoing coaching (subscriptions), and a community that supports visual progress tracking — all while keeping users' data and payments secure.
 
-**Why FitLife Hub Stands Out:**  
-- **All-in-One Solution:** Shop for top-quality gear, subscribe to expert-designed workout and nutrition plans, and track your progress—all in one place.
-- **Community Motivation:** Share your fitness journey with others, including images of your progress, and get inspired by real stories from fellow members.
-- **Visual Progress Sharing:** Users can upload images alongside their progress updates, making it easy to celebrate milestones and motivate others.
-- **Expert Guidance:** Access plans created by certified trainers and nutritionists, tailored to your goals.
-- **Personalized Experience:** Create a profile, set your fitness goals, and receive recommendations based on your interests.
-- **Secure & Supportive:** Enjoy a safe, welcoming environment with robust privacy controls and active moderation.
-- **Mobile Friendly:** Designed to look great and work smoothly on any device.
-- **Accessible:** Built with accessibility in mind for all users.
+Rationale and core objectives
+- Provide an integrated experience: product discovery + community progress sharing so users avoid juggling multiple services.
+- Increase adherence and retention: social accountability (image progress, comments, milestones) combined with subscription plans drives ongoing engagement.
+- Enable small trainers and boutique brands to sell products and plans with low friction and secure payments.
+- Prioritise privacy and safety: make it easy for users to control visibility of progress images and personal data while protecting financial data via a PCI-compliant provider (Stripe).
 
-**Target Audience:**  
-- Individuals seeking fitness products and plans.
-- Users wanting to share and visually track progress.
-- Trainers and admins managing products and plans.
-- Anyone looking for motivation, accountability, and expert support.
+Primary target audiences (problems & outcomes)
+- Novice fitness users: need accessible plans, affordable gear, and motivation — outcome: guided entry and steady progress.
+- Intermediate/advanced users: want curated products and advanced plans — outcome: discover and subscribe to specialised content.
+- Trainers & micro-gyms: need a storefront + subscription model and community features to retain clients — outcome: monetise services with minimal overhead.
+- Community seekers: want to share progress photos safely and receive encouragement — outcome: social reinforcement without sacrificing privacy.
 
----
+How the app maps to user needs (example user stories addressed)
+- As a new user, I want to find affordable starter kits so I can begin training immediately. (E-commerce + product recommendations)
+- As a subscriber, I want to follow a recurring plan and track my progress with photos. (Subscriptions + ProgressUpdate)
+- As a user, I want to control who sees my progress photos. (Privacy settings & moderation)
+- As a user, I want secure checkout without exposing my card details. (Stripe tokenization)
+
+--- 
+
+## Intent, Data Handling & Security
+
+This section explains why the app was designed this way, what data we collect, and how we protect it.
+
+Purpose-driven design
+- Unify commerce, coaching, and community so users get product recommendations, structured plans, and social motivation in one safe place.
+- Support micro-businesse (brands) with low-friction commerce and subscription tools so they can scale without heavy engineering overhead.
+- Make privacy a first-class feature: explicit visibility controls for progress images and clear account/data deletion flows.
+
+Data classification & storage
+- Public content: product pages and public progress posts — hosted on AWS S3 as static/media.
+- Protected personal data: profile info, orders, subscriptions — stored in the app database (Postgres in production).
+- Payment references: Stripe tokens/IDs only — raw card data is never stored on our servers.
+
+Key security controls
+- Transport security: HTTPS enforced (HSTS recommended) for all environments.
+- Authentication: Django auth with secure password hashing; enforce strong SECRET_KEY via env vars.
+- Authorization: Role-based access controls (member, admin) enforced in views and templates.
+- CSRF/XSS/SQLi: Django CSRF middleware, template auto-escaping, and ORM usage to prevent common web attacks.
+- Cookie and session safety: SESSION_COOKIE_SECURE, CSRF_COOKIE_SECURE, and HttpOnly flags in production.
+- File uploads: Validate MIME types and sizes server-side, use presigned S3 uploads, and limit public exposure based on privacy settings.
+- CORS & CORB: Configure S3 and backend CORS to allow only trusted origins and set correct Content-Type headers for media.
+- Payments: Integrate with Stripe using client-side tokens and server-side secret keys; comply with PCI scope minimisation.
+- Secrets management: All secrets via environment variables; include a .env.example and never commit real keys.
+- Monitoring & backups: Use Heroku logs + optional Sentry for errors; enable DB backups and S3 versioning.
+
+Privacy & compliance
+- Account deletion and data removal workflows available; email opt-in/out for marketing.
+- Follow regional privacy requirements (e.g., support data access/deletion requests for GDPR).
+
+Operational recommendations before production
+- Set DEBUG=False, configure ALLOWED_HOSTS, rotate credentials, enable HSTS, and audit S3 bucket permissions.
+- Add a CSP header and automated security scans (Snyk, Bandit, etc.).
+- Implement rate limiting on auth endpoints and enable monitoring/alerts.
+
+Where to find configuration in this repo
+- fithub/settings.py — security and third-party config
+- custom_storages.py — S3 storage settings
+- subscriptions/* and store/* — payment and subscription logic (store only Stripe tokens/IDs)
+- docs/aws-s3-cors.json (or equivalent) — S3 CORS rules to prevent CORB/CORS issues
+
+--- 
 
 ## Features
 
