@@ -23,7 +23,7 @@ class Order(models.Model):
         ('canceled', 'Canceled'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    total_cents = models.PositiveIntegerField()
+    total_cents = models.PositiveIntegerField(default=0)
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
