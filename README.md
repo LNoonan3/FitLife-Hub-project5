@@ -148,7 +148,7 @@ Where to find configuration in this repo
 
 ### Entity Relationship Diagram
 
-![Entity Relationship Diagram](README-img/fitLife-hub.jpg)
+![Entity Relationship Diagram](README-img/fitlife-hub.jpg)
 
 ### Wireframe
 ![Home page Wireframe](README-img/Wireframe.png)
