@@ -32,6 +32,14 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def total_euros(self):
+        """Convert total_cents to euros."""
+        return self.total_cents / 100
+
+    def item_count(self):
+        """Get total number of items in order."""
+        return sum(item.quantity for item in self.items.all())
+
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
 
@@ -54,7 +62,7 @@ class OrderItem(models.Model):
         return self.unit_price * self.quantity
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name}"
+        return f"{self.quantity} x {self.product.name if self.product else 'Deleted Product'}"
 
 
 class Review(models.Model):

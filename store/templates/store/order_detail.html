@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Order #{{ order.id }} – FitLife Hub{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <a href="{% url 'store:order_history' %}" class="btn btn-link text-decoration-none ps-0">
+            <i class="fas fa-arrow-left me-2"></i>Back to Orders
+          </a>
+          <h2 class="fw-bold mb-0">Order #{{ order.id }}</h2>
+          <p class="text-muted mb-0">Placed on {{ order.created_at|date:"F d, Y" }} at {{ order.created_at|time:"g:i A" }}</p>
+        </div>
+        <span class="badge 
+          {% if order.status == 'paid' %}bg-success
+          {% elif order.status == 'shipped' %}bg-info
+          {% elif order.status == 'pending' %}bg-warning text-dark
+          {% else %}bg-danger
+          {% endif %} px-4 py-3 fs-6">
+          {{ order.get_status_display }}
+        </span>
+      </div>
+
+      <!-- Order Timeline -->
+      <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title fw-bold mb-4">Order Status</h5>
+          <div class="order-timeline">
+            <div class="timeline-item {% if order.status == 'pending' or order.status == 'paid' or order.status == 'shipped' %}completed{% endif %}">
+              <div class="timeline-marker">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-1">Order Placed</h6>
+                <p class="text-muted small mb-0">{{ order.created_at|date:"M d, Y - g:i A" }}</p>
+              </div>
+            </div>
+            <div class="timeline-item {% if order.status == 'paid' or order.status == 'shipped' %}completed{% endif %}">
+              <div class="timeline-marker">
+                <i class="fas fa-credit-card"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-1">Payment Confirmed</h6>
+                <p class="text-muted small mb-0">
+                  {% if order.status == 'paid' or order.status == 'shipped' %}
+                    {{ order.updated_at|date:"M d, Y - g:i A" }}
+                  {% else %}
+                    Pending
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+            <div class="timeline-item {% if order.status == 'shipped' %}completed{% endif %}">
+              <div class="timeline-marker">
+                <i class="fas fa-truck"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-1">Shipped</h6>
+                <p class="text-muted small mb-0">
+                  {% if order.status == 'shipped' %}
+                    {{ order.updated_at|date:"M d, Y - g:i A" }}
+                  {% else %}
+                    Processing
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Order Items -->
+        <div class="col-md-8 mb-4">
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+              <h5 class="card-title mb-0 fw-bold">
+                <i class="fas fa-box-open me-2 text-primary"></i>Order Items
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Product</th>
+                      <th class="text-center">Quantity</th>
+                      <th class="text-end">Price</th>
+                      <th class="text-end">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in order.items.all %}
+                      <tr>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            {% if item.product.image %}
+                              <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                                   class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                            {% else %}
+                              <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
+                                   style="width: 50px; height: 50px;">
+                                <i class="fas fa-image text-muted"></i>
+                              </div>
+                            {% endif %}
+                            <div>
+                              <a href="{% url 'store:product_detail' item.product.pk %}" 
+                                 class="text-decoration-none text-dark fw-semibold">
+                                {{ item.product.name }}
+                              </a>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-end">€{{ item.unit_price|floatformat:2 }}</td>
+                        <td class="text-end fw-bold">€{{ item.line_total|floatformat:2 }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 mt-3">
+            <button onclick="window.print()" class="btn btn-outline-secondary">
+              <i class="fas fa-print me-2"></i>Print Order
+            </button>
+            <a href="mailto:support@fitlifehub.com?subject=Order #{{ order.id }}" class="btn btn-outline-primary">
+              <i class="fas fa-envelope me-2"></i>Contact Support
+            </a>
+          </div>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="col-md-4">
+          <!-- Summary Card -->
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white">
+              <h5 class="card-title mb-0 fw-bold">Order Summary</h5>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Subtotal:</span>
+                <span>€{{ order.total_amount|floatformat:2 }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Shipping:</span>
+                <span class="text-success">Free</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Tax:</span>
+                <span>€0.00</span>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-between mb-0">
+                <strong class="fs-5">Total:</strong>
+                <strong class="fs-5 text-primary">€{{ order.total_amount|floatformat:2 }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Info Card -->
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white">
+              <h6 class="card-title mb-0 fw-bold">Customer Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <small class="text-muted d-block mb-1">Name</small>
+                <span>{{ order.user.get_full_name|default:order.user.username }}</span>
+              </div>
+              <div class="mb-0">
+                <small class="text-muted d-block mb-1">Email</small>
+                <span>{{ order.user.email }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Help Card -->
+          <div class="card shadow-sm border-0 bg-light">
+            <div class="card-body text-center">
+              <i class="fas fa-question-circle fa-2x text-primary mb-3"></i>
+              <h6 class="fw-bold mb-2">Need Help?</h6>
+              <p class="text-muted small mb-3">Our support team is here to assist you with your order.</p>
+              <a href="mailto:support@fitlifehub.com" class="btn btn-sm btn-primary">
+                <i class="fas fa-envelope me-2"></i>Contact Support
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

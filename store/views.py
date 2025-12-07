@@ -332,9 +332,24 @@ def oneoff_webhook(request):
 
 @login_required
 def order_history(request):
-    """Display user's order history."""
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    """Display user's order history with detailed information."""
+    orders = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
+    
+    # Add totals calculation for each order
+    for order in orders:
+        order.total_amount = order.total_cents / 100
+        order.item_count = sum(item.quantity for item in order.items.all())
+    
     return render(request, 'store/order_history.html', {'orders': orders})
+
+
+@login_required
+def order_detail(request, order_id):
+    """Display detailed view of a single order."""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order.total_amount = order.total_cents / 100
+    
+    return render(request, 'store/order_detail.html', {'order': order})
 
 
 @login_required
