@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 import stripe
 import ast
 from django.conf import settings
@@ -17,9 +18,30 @@ from store.utils import send_order_confirmation_email
 
 
 def product_list(request):
-    """Display all products."""
+    """Display all products with search and filter."""
     products = Product.objects.all()
-    return render(request, 'store/product_list.html', {'products': products})
+    query = request.GET.get('q')
+    
+    if query:
+        products = products.filter(
+            name__icontains=query
+        ) | products.filter(
+            description__icontains=query
+        )
+    
+    # Filter by price range
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    
+    if min_price:
+        products = products.filter(price__gte=min_price)
+    if max_price:
+        products = products.filter(price__lte=max_price)
+    
+    return render(request, 'store/product_list.html', {
+        'products': products,
+        'query': query
+    })
 
 
 def product_detail(request, pk):
@@ -144,8 +166,14 @@ def checkout_view(request):
     items = []
     line_items = []
     total = 0
+    
+    # Check stock availability
     for prod_id, qty in cart.items():
         product = get_object_or_404(Product, pk=prod_id)
+        if product.stock < qty:
+            messages.error(request, f"Sorry, only {product.stock} units of {product.name} are available.")
+            return redirect('store:cart')
+        
         line_total = product.price * qty
         items.append({
             'product': product,
@@ -165,7 +193,6 @@ def checkout_view(request):
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            # You can save the details to the order or pass to Stripe metadata
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 customer_email=request.user.email,
@@ -177,24 +204,16 @@ def checkout_view(request):
                 cancel_url=request.build_absolute_uri(
                     reverse('store:checkout_cancel')
                 ),
-                metadata={
-                    'user_id': request.user.id,
-                    'cart': str(cart),
-                    'full_name': form.cleaned_data['full_name'],
-                    'address': form.cleaned_data['address'],
-                    'city': form.cleaned_data['city'],
-                    'postcode': form.cleaned_data['postcode'],
-                    'country': form.cleaned_data['country'],
-                },
+                metadata={'user_id': request.user.id, 'cart': str(cart)}
             )
             return redirect(session.url, code=303)
     else:
         form = CheckoutForm()
 
     return render(request, 'store/checkout.html', {
+        'form': form,
         'items': items,
         'total': total,
-        'form': form,
     })
 
 
@@ -257,39 +276,65 @@ def oneoff_webhook(request):
             cart = ast.literal_eval(cart_str)
             user = User.objects.get(id=user_id)
             total = 0
+            
+            # Calculate total and check stock again
             for prod_id, qty in cart.items():
                 product = Product.objects.get(pk=prod_id)
+                if product.stock < qty:
+                    # Log error or handle insufficient stock
+                    continue
                 line_total = product.price * qty
                 total += line_total
+            
             order = Order.objects.create(
                 user=user,
                 total_cents=int(total * 100),
                 status='paid'
             )
+            
+            # Create order items and reduce stock
             for prod_id, qty in cart.items():
                 product = Product.objects.get(pk=prod_id)
-                OrderItem.objects.create(
-                    order=order,
-                    product=product,
-                    quantity=qty,
-                    unit_price=product.price
-                )
-            send_order_confirmation_email(user, order)  # <-- Send email here
+                if product.stock >= qty:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        quantity=qty,
+                        unit_price=product.price
+                    )
+                    # Reduce stock
+                    product.stock -= qty
+                    product.save()
+            
+            send_order_confirmation_email(user, order)
         else:
             product_id = sess['metadata'].get('product_id')
             user = User.objects.get(id=user_id)
             product = Product.objects.get(pk=product_id)
-            order = Order.objects.create(
-                user=user, total_cents=int(product.price * 100), status='paid'
-            )
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=1,
-                unit_price=product.price
-            )
-            send_order_confirmation_email(user, order)  # <-- Send email here
+            
+            if product.stock >= 1:
+                order = Order.objects.create(
+                    user=user, total_cents=int(product.price * 100), status='paid'
+                )
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=1,
+                    unit_price=product.price
+                )
+                # Reduce stock
+                product.stock -= 1
+                product.save()
+                send_order_confirmation_email(user, order)
+    
     return HttpResponse(status=200)
+
+
+@login_required
+def order_history(request):
+    """Display user's order history."""
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'store/order_history.html', {'orders': orders})
 
 
 @login_required
