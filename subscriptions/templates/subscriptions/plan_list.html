@@ -2,15 +2,27 @@
 {% block title %}Plans – FitLife Hub{% endblock %} 
 {% block content %}
 <h2 class="text-center my-4">Choose Your FitLife Hub Plan</h2>
+
+{% if current_plan %}
+<div class="alert alert-info text-center mb-4">
+  <i class="fas fa-info-circle me-2"></i>
+  You're currently on the <strong>{{ current_plan.name }}</strong> plan. 
+  Select a different plan below to switch instantly.
+</div>
+{% endif %}
+
 <div class="row justify-content-center">
   {% for plan in plans %}
   <div class="col-md-5 col-lg-4 mb-4">
-    <div class="card h-100 shadow-sm border-0 {% if plan.interval == 'yearly' %}border-primary border-2{% endif %}">
+    <div class="card h-100 shadow-sm border-0 {% if plan.interval == 'yearly' %}border-primary border-2{% endif %} {% if plan.id in user_active_plan_ids %}border-success border-3{% endif %}">
       <div class="card-body d-flex flex-column">
         <h5 class="card-title text-center fw-bold mb-2">
           {{ plan.name }}
           {% if plan.interval == 'yearly' %}
             <span class="badge bg-primary ms-2">Best Value</span>
+          {% endif %}
+          {% if plan.id in user_active_plan_ids %}
+            <span class="badge bg-success ms-2">Current Plan</span>
           {% endif %}
         </h5>
         <h6 class="text-center mb-3 text-muted">€{{ plan.price|floatformat:2 }} / {{ plan.interval|title }}</h6>
@@ -49,9 +61,45 @@
         </ul>
         <div class="mt-auto text-center">
           {% if user.is_authenticated and plan.id in user_active_plan_ids %}
-            <button class="btn btn-secondary w-100" disabled>
-              Already Subscribed
+            <button class="btn btn-success w-100" disabled>
+              <i class="fas fa-check-circle me-1"></i>Current Plan
             </button>
+          {% elif user.is_authenticated and plan.id in user_canceled_plan_ids and current_plan %}
+            <!-- Show Switch button if user has active plan -->
+            <form
+              action="{% url 'subscriptions:subscribe_plan' plan.id %}"
+              method="post"
+              class="d-inline with-spinner"
+            >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-warning w-100">
+                <i class="fas fa-exchange-alt me-1"></i>Switch to This Plan
+              </button>
+            </form>
+          {% elif user.is_authenticated and plan.id in user_canceled_plan_ids %}
+            <!-- Show Renew button for canceled subscriptions -->
+            <form
+              action="{% url 'subscriptions:subscribe_plan' plan.id %}"
+              method="post"
+              class="d-inline with-spinner"
+            >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success w-100">
+                <i class="fas fa-redo me-1"></i>Renew — €{{ plan.price|floatformat:2 }}/{{ plan.interval }}
+              </button>
+            </form>
+          {% elif current_plan and plan.id != current_plan.id %}
+            <!-- Show Switch button for different plans -->
+            <form
+              action="{% url 'subscriptions:subscribe_plan' plan.id %}"
+              method="post"
+              class="d-inline with-spinner"
+            >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-warning w-100">
+                <i class="fas fa-exchange-alt me-1"></i>Switch Plan
+              </button>
+            </form>
           {% else %}
             <form
               action="{% url 'subscriptions:subscribe_plan' plan.id %}"

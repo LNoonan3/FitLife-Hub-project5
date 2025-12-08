@@ -23,43 +23,68 @@ def signup_view(request):
 
 @login_required
 def profile(request):
+    from datetime import date
+
+    # Get the most recent subscription (regardless of status)
     subscription = (
         Subscription.objects
         .filter(user=request.user)
         .order_by('-start_date')
         .first()
     )
+
+    # Get recent progress updates
+    from core.models import ProgressUpdate
+    recent_updates = ProgressUpdate.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:3]
+
     days_until_next_payment = None
-    if subscription and subscription.next_payment_date:
+    if subscription and subscription.next_payment_date and subscription.status == 'active':
         next_payment = subscription.next_payment_date
         days_until_next_payment = (next_payment - date.today()).days
+
     return render(request, 'users/profile.html', {
         'subscription': subscription,
+        'recent_updates': recent_updates,
         'days_until_next_payment': days_until_next_payment,
+        'today': date.today(),
     })
 
 
 @login_required
 def profile_edit(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
+
+    # Get the most recent subscription
     subscription = (
         Subscription.objects
-        .filter(user=request.user, status='active')
+        .filter(user=request.user)
         .order_by('-start_date')
         .first()
     )
+
+    days_until_next_payment = None
+    if subscription and subscription.next_payment_date and subscription.status == 'active':
+        next_payment = subscription.next_payment_date
+        days_until_next_payment = (next_payment - date.today()).days
+
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
+            messages.success(request, "Profile updated successfully!")
             return redirect('users:profile')
     else:
         form = ProfileForm(instance=profile)
+
     return render(
         request,
         'users/profile_edit.html',
         {
             'form': form,
-            'subscription': subscription
+            'subscription': subscription,
+            'days_until_next_payment': days_until_next_payment,
+            'today': date.today(),
         }
     )

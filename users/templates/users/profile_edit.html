@@ -27,44 +27,53 @@
     </div>
 
 <a href="{% url 'subscriptions:my_subscription' %}" style="text-decoration: none; color: inherit;">
-  <div class="card shadow-sm mb-4 hover-shadow" style="transition: box-shadow 0.2s;">
+  <div class="card shadow-sm mb-4 hover-shadow" style="transition: all 0.3s ease;">
     <div class="card-body">
-      <h5 class="card-title mb-3">Your Subscription</h5>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-crown me-2 text-warning"></i>Your Subscription
+        </h5>
+        <i class="fas fa-chevron-right text-muted"></i>
+      </div>
+      
       {% if subscription %}
-        <div class="mb-2">
-          <span class="fw-bold">Plan:</span> {{ subscription.plan.name }}
-        </div>
-        <div class="mb-2">
-          <span class="fw-bold">Status:</span>
-          {% if subscription.status == 'active' %}
-            <span class="badge bg-success">Active</span>
-          {% elif subscription.status == 'canceled' %}
-            <span class="badge bg-secondary">Canceled</span>
-          {% else %}
-            <span class="badge bg-warning text-dark">{{ subscription.status|title }}</span>
-          {% endif %}
-        </div>
-        <div class="mb-2">
-          <span class="fw-bold">Start Date:</span> {{ subscription.start_date }}
-        </div>
-        {% if subscription.status == 'active' %}
-          <div class="mb-2">
-            <span class="fw-bold">Next Payment Due:</span> {{ subscription.next_payment_date }}
+        <!-- Plan & Status -->
+        <div class="mb-3 pb-3 border-bottom">
+          <span class="fw-bold fs-6">{{ subscription.plan.name }}</span>
+          <div class="mt-2">
+            {% if subscription.status == 'active' %}
+              <span class="badge bg-success">
+                <i class="fas fa-check-circle me-1"></i>Active
+              </span>
+            {% elif subscription.status == 'canceled' %}
+              <span class="badge bg-secondary">
+                <i class="fas fa-times-circle me-1"></i>Canceled
+              </span>
+            {% else %}
+              <span class="badge bg-warning text-dark">
+                {{ subscription.status|title }}
+              </span>
+            {% endif %}
           </div>
-          {% if days_until_next_payment is not None %}
-            <div class="mb-2">
-              <span class="fw-bold">Days Until Next Payment:</span> {{ days_until_next_payment }}
-            </div>
-          {% endif %}
-          <span class="text-muted ms-2">Click to manage or cancel your subscription.</span>
+        </div>
+        
+        {% if subscription.status == 'active' %}
+          <div class="small text-muted">
+            <i class="fas fa-calendar me-1"></i>
+            Next payment: {{ subscription.next_payment_date|date:"M d, Y" }}
+          </div>
         {% else %}
-          <div class="mb-2">
-            <span class="fw-bold">End Date:</span> {{ subscription.end_date }}
+          <div class="alert alert-warning mb-0 small border-0">
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            Subscription ended {{ subscription.end_date|date:"M d, Y" }}.
+            <a href="{% url 'subscriptions:plan_list' %}" class="alert-link fw-bold">Renew now</a>
           </div>
         {% endif %}
       {% else %}
-        <p class="text-muted">You do not have an active subscription.</p>
-        <span class="btn btn-primary btn-sm">View Plans</span>
+        <p class="text-muted mb-2">No active subscription</p>
+        <a href="{% url 'subscriptions:plan_list' %}" class="btn btn-primary btn-sm">
+          View Plans
+        </a>
       {% endif %}
     </div>
   </div>
