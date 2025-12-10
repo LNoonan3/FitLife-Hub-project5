@@ -318,6 +318,54 @@ Automated tests are provided for all major components of the application:
 - Error handling and custom 404 page tested.
 - Newsletter signup tested for valid and invalid email addresses.
 
+### Known Issues
+
+#### Order History Not Working
+
+**Status:** ❌ Not Functional
+
+**Description:** The order history feature does not work when purchasing products through the checkout flow. Orders are created in the database, but users cannot view their order history or order details.
+
+**Why It Doesn't Work:**
+
+1. **Session-Based Cart vs. Database Orders:** The cart system uses Django sessions to store items temporarily. When users proceed to checkout, the cart data is passed to Stripe as metadata.
+
+2. **Webhook Processing Issues:** The [`oneoff_webhook`](store/views.py) function receives Stripe webhook events and attempts to create `Order` objects. However, there are several points of failure:
+   - Cart metadata is stringified and may not deserialize correctly
+   - Stock validation happens after order creation, potentially creating incomplete orders
+   - The webhook may fail silently due to the `@csrf_exempt` decorator and lack of proper error logging
+
+3. **Order Item Creation:** Even when orders are created, the associated [`OrderItem`](store/models.py) records may not be created properly if the webhook processing fails partway through.
+
+4. **Missing Error Handling:** The webhook handler doesn't return detailed error messages, making debugging difficult. Orders may be created in a "pending" state but never transition to "paid."
+
+**Affected Views:**
+- [`order_history`](store/views.py) - Queries orders but may return empty results
+- [`order_detail`](store/views.py) - Cannot display order details if orders aren't created
+- **Templates:** [store/templates/store/order_history.html](store/templates/store/order_history.html) and [store/templates/store/order_detail.html](store/templates/store/order_detail.html)
+
+**What Was Attempted:**
+
+- ✅ Built the complete order history UI with responsive design
+- ✅ Implemented database models ([`Order`](store/models.py) and [`OrderItem`](store/models.py))
+- ✅ Created views to fetch and display orders
+- ✅ Integrated with Stripe checkout and webhooks
+- ✅ Added comprehensive templates for order display
+- ✅ Implemented order status tracking (pending, paid, shipped, canceled)
+- ✅ Added email confirmation via [`send_order_confirmation_email`](store/utils.py)
+
+**Why It Still Doesn't Work:**
+
+The core issue is the mismatch between the session-based cart and the webhook-driven order creation. The Stripe webhook may not fire reliably in development, or the payload metadata may not be properly formatted when passed to the webhook handler. Additionally, without proper logging and error handling in the webhook, failures are silent.
+
+**Recommended Fixes:**
+
+1. Add comprehensive logging to the webhook handler to track what's happening
+2. Validate and properly deserialize the cart metadata before processing
+3. Use Django signals or a task queue (Celery) for more reliable order creation
+4. Implement retry logic for failed webhook events
+5. Add proper exception handling and return HTTP 200 only after successful processing
+
 ---
 
 ## Deployment
