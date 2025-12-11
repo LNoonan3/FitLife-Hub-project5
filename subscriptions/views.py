@@ -28,19 +28,25 @@ def plan_list(request):
             user=request.user,
             status='active'
         )
-        user_active_plan_ids = list(active_subs.values_list('plan_id', flat=True))
+        user_active_plan_ids = list(
+            active_subs.values_list('plan_id', flat=True)
+        )
 
         # Get the current active subscription
         current_subscription = active_subs.first()
         if current_subscription:
             current_plan = current_subscription.plan
 
-        # Get canceled subscriptions (for showing "Renew" instead of "Subscribe")
+        # Get canceled subscriptions
+        # (for showing "Renew" instead of "Subscribe")
         user_canceled_plan_ids = list(
             Subscription.objects.filter(
                 user=request.user,
                 status='canceled'
-            ).values_list('plan_id', flat=True)
+            ).values_list(
+                'plan_id',
+                flat=True
+            )
         )
 
     # Check for success messages
@@ -48,7 +54,10 @@ def plan_list(request):
         if request.GET.get('switched') == '1':
             messages.success(
                 request,
-                "Your plan has been successfully switched! Your old subscription has been canceled."
+                (
+                    "Your plan has been successfully switched! "
+                    "Your old subscription has been canceled."
+                )
             )
         else:
             messages.success(
@@ -95,8 +104,14 @@ def subscribe_plan(request, plan_id):
     if other_active_subscription:
         messages.warning(
             request,
-            f"You currently have an active {other_active_subscription.plan.name} subscription. "
-            "When you complete checkout, your current plan will be canceled and replaced with the new plan."
+            (
+
+                f"You currently have an active "
+                f"{other_active_subscription.plan.name} subscription. "
+                "When you complete checkout, your current plan will be canceled "
+                "and replaced with the new plan."
+
+            )
         )
 
     if not plan.stripe_price_id:
@@ -140,8 +155,8 @@ def subscribe_plan(request, plan_id):
 @login_required
 def cancel_subscription(request, sub_id):
     subscription = get_object_or_404(
-        Subscription, 
-        pk=sub_id, 
+        Subscription,
+        pk=sub_id,
         user=request.user
     )
 
@@ -150,7 +165,7 @@ def cancel_subscription(request, sub_id):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
             # Cancel the subscription on Stripe
-            stripe_response = stripe.Subscription.delete(subscription.stripe_sub_id)
+            stripe.Subscription.delete(subscription.stripe_sub_id)
 
             # Update the local database record immediately
             subscription.status = 'canceled'
@@ -162,7 +177,7 @@ def cancel_subscription(request, sub_id):
                 "Your subscription has been successfully canceled. "
                 "You will retain access until the end of your billing period."
             )
-        except stripe.error.InvalidRequestError as e:
+        except stripe.error.InvalidRequestError:
             # Handle case where subscription doesn't exist on Stripe
             messages.warning(
                 request,
@@ -178,7 +193,7 @@ def cancel_subscription(request, sub_id):
                 "Please contact support."
             )
             return redirect('subscriptions:my_subscription')
-        except Exception as e:
+        except Exception:
             messages.error(
                 request,
                 "An unexpected error occurred. Please contact support."
@@ -186,7 +201,7 @@ def cancel_subscription(request, sub_id):
             return redirect('subscriptions:my_subscription')
     else:
         messages.info(
-            request, 
+            request,
             "This subscription is already canceled."
         )
 
@@ -225,7 +240,11 @@ def my_subscription(request):
         all_subscriptions = Subscription.objects.none()
 
     days_until_next_payment = None
-    if subscription and subscription.next_payment_date and subscription.status == 'active':
+    if (
+        subscription
+        and subscription.next_payment_date
+        and subscription.status == 'active'
+    ):
         next_payment = subscription.next_payment_date
         days_until_next_payment = (next_payment - date.today()).days
 
@@ -280,9 +299,15 @@ def stripe_webhook(request):
         stripe_sub_id = session.get('subscription')
         plan_id = session.get('metadata', {}).get('plan_id')
         user_id = session.get('metadata', {}).get('user_id')
-        old_subscription_id = session.get('metadata', {}).get('old_subscription_id')
-        old_stripe_sub_id = session.get('metadata', {}).get('old_stripe_sub_id')
-        switching_plans = session.get('metadata', {}).get('switching_plans') == 'true'
+        old_subscription_id = (
+            session.get('metadata', {}).get('old_subscription_id')
+        )
+        old_stripe_sub_id = (
+            session.get('metadata', {}).get('old_stripe_sub_id')
+        )
+        metadata = session.get('metadata', {})
+        switching_plans_value = metadata.get('switching_plans')
+        switching_plans = switching_plans_value == 'true'
 
         try:
             # Get user and plan
@@ -321,10 +346,18 @@ def stripe_webhook(request):
                         # Cancel on Stripe first
                         if old_stripe_sub_id or old_sub.stripe_sub_id:
                             try:
-                                stripe.Subscription.delete(old_stripe_sub_id or old_sub.stripe_sub_id)
-                                print(f"✓ Canceled old Stripe subscription: {old_stripe_sub_id or old_sub.stripe_sub_id}")
+                                stripe.Subscription.delete(
+                                    old_stripe_sub_id or old_sub.stripe_sub_id
+                                )
+                                print(
+                                    f"✓ Canceled old Stripe subscription: "
+                                    f"{old_stripe_sub_id or old_sub.stripe_sub_id}"
+                                )
                             except stripe.error.InvalidRequestError:
-                                print(f"Old subscription already canceled on Stripe: {old_stripe_sub_id or old_sub.stripe_sub_id}")
+                                print(
+                                    "Old subscription already canceled on Stripe: "
+                                    f"{old_stripe_sub_id or old_sub.stripe_sub_id}"
+                                )
                             except stripe.error.StripeError as e:
                                 print(f"Error canceling old Stripe subscription: {e}")
 
@@ -332,11 +365,15 @@ def stripe_webhook(request):
                         old_sub.status = 'canceled'
                         old_sub.end_date = timezone.now().date()
                         old_sub.save()
-                        print(f"✓ Canceled old subscription #{old_sub.id} ({old_sub.plan.name}) for user {user.email}")
+                        print(
+                            f"✓ Canceled old subscription #{old_sub.id} "
+                            f"({old_sub.plan.name}) for user {user.email}"
+                        )
                 except Subscription.DoesNotExist:
                     print(f"Old subscription {old_subscription_id} not found")
             else:
-                # Fallback: Find and cancel any active subscription for this user
+                # Fallback: Find and cancel any active subscription
+                # for this user
                 active_subs = Subscription.objects.filter(
                     user=user,
                     status='active'
@@ -345,14 +382,20 @@ def stripe_webhook(request):
                 for old_sub in active_subs:
                     try:
                         stripe.Subscription.delete(old_sub.stripe_sub_id)
-                        print(f"✓ Canceled Stripe subscription: {old_sub.stripe_sub_id}")
-                    except:
+                        print(
+                            f"✓ Canceled Stripe subscription: "
+                            f"{old_sub.stripe_sub_id}"
+                        )
+                    except Exception:
                         pass
 
                     old_sub.status = 'canceled'
                     old_sub.end_date = timezone.now().date()
                     old_sub.save()
-                    print(f"✓ Canceled subscription #{old_sub.id} ({old_sub.plan.name})")
+                    print(
+                        f"✓ Canceled subscription #{old_sub.id} "
+                        f"({old_sub.plan.name})"
+                    )
 
         # STEP 2: Check if renewing a canceled subscription to the SAME plan
         old_canceled_subscription = Subscription.objects.filter(
@@ -369,7 +412,10 @@ def stripe_webhook(request):
             old_canceled_subscription.next_payment_date = next_payment_date
             old_canceled_subscription.end_date = None
             old_canceled_subscription.save()
-            print(f"✓ Subscription RENEWED: User {user.email} → {plan.name} (ID: {old_canceled_subscription.id})")
+            print(
+                f"✓ Subscription RENEWED: User {user.email} → {plan.name} "
+                f"(ID: {old_canceled_subscription.id})"
+            )
         else:
             # STEP 3: Create new subscription for different plan
             new_sub = Subscription.objects.create(
@@ -381,7 +427,10 @@ def stripe_webhook(request):
                 next_payment_date=next_payment_date,
                 end_date=None,
             )
-            print(f"✓ NEW subscription created: User {user.email} → {plan.name} (ID: {new_sub.id})")
+            print(
+                f"✓ NEW subscription created: User {user.email} → {plan.name} "
+                f"(ID: {new_sub.id})"
+            )
 
     # Handle subscription cancellation
     elif event['type'] == 'customer.subscription.deleted':
@@ -391,9 +440,15 @@ def stripe_webhook(request):
             sub.status = 'canceled'
             sub.end_date = timezone.now().date()
             sub.save()
-            print(f"✓ Subscription canceled via webhook: {stripe_sub_id} for user {sub.user.email}")
+            print(
+                f"✓ Subscription canceled via webhook: {stripe_sub_id} "
+                f"for user {sub.user.email}"
+            )
         except Subscription.DoesNotExist:
-            print(f"Subscription not found for cancel webhook: {stripe_sub_id}")
+            print(
+                f"Subscription not found for cancel webhook: "
+                f"{stripe_sub_id}"
+            )
 
     # Handle subscription updates (status changes, etc.)
     elif event['type'] == 'customer.subscription.updated':
@@ -416,8 +471,14 @@ def stripe_webhook(request):
                 sub.status = 'past_due'
 
             sub.save()
-            print(f"✓ Subscription updated via webhook: {stripe_sub_id} - Status: {stripe_status}")
+            print(
+                f"✓ Subscription updated via webhook: {stripe_sub_id} - "
+                f"Status: {stripe_status}"
+            )
         except Subscription.DoesNotExist:
-            print(f"Subscription not found for update webhook: {stripe_sub_id}")
+            print(
+                f"Subscription not found for update webhook: "
+                f"{stripe_sub_id}"
+            )
 
     return HttpResponse(status=200)

@@ -21,23 +21,23 @@ def product_list(request):
     """Display all products with search and filter."""
     products = Product.objects.all()
     query = request.GET.get('q')
-    
+
     if query:
         products = products.filter(
             name__icontains=query
         ) | products.filter(
             description__icontains=query
         )
-    
+
     # Filter by price range
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-    
+
     if min_price:
         products = products.filter(price__gte=min_price)
     if max_price:
         products = products.filter(price__lte=max_price)
-    
+
     return render(request, 'store/product_list.html', {
         'products': products,
         'query': query
@@ -166,14 +166,20 @@ def checkout_view(request):
     items = []
     line_items = []
     total = 0
-    
+
     # Check stock availability
     for prod_id, qty in cart.items():
         product = get_object_or_404(Product, pk=prod_id)
         if product.stock < qty:
-            messages.error(request, f"Sorry, only {product.stock} units of {product.name} are available.")
+            messages.error(
+                request,
+                (
+                    f"Sorry, only {product.stock} units of "
+                    f"{product.name} are available."
+                )
+            )
             return redirect('store:cart')
-        
+
         line_total = product.price * qty
         items.append({
             'product': product,
@@ -276,7 +282,7 @@ def oneoff_webhook(request):
             cart = ast.literal_eval(cart_str)
             user = User.objects.get(id=user_id)
             total = 0
-            
+
             # Calculate total and check stock again
             for prod_id, qty in cart.items():
                 product = Product.objects.get(pk=prod_id)
@@ -285,13 +291,13 @@ def oneoff_webhook(request):
                     continue
                 line_total = product.price * qty
                 total += line_total
-            
+
             order = Order.objects.create(
                 user=user,
                 total_cents=int(total * 100),
                 status='paid'
             )
-            
+
             # Create order items and reduce stock
             for prod_id, qty in cart.items():
                 product = Product.objects.get(pk=prod_id)
@@ -305,16 +311,18 @@ def oneoff_webhook(request):
                     # Reduce stock
                     product.stock -= qty
                     product.save()
-            
+
             send_order_confirmation_email(user, order)
         else:
             product_id = sess['metadata'].get('product_id')
             user = User.objects.get(id=user_id)
             product = Product.objects.get(pk=product_id)
-            
+
             if product.stock >= 1:
                 order = Order.objects.create(
-                    user=user, total_cents=int(product.price * 100), status='paid'
+                    user=user,
+                    total_cents=int(product.price * 100),
+                    status='paid'
                 )
                 OrderItem.objects.create(
                     order=order,
@@ -326,20 +334,24 @@ def oneoff_webhook(request):
                 product.stock -= 1
                 product.save()
                 send_order_confirmation_email(user, order)
-    
+
     return HttpResponse(status=200)
 
 
 @login_required
 def order_history(request):
     """Display user's order history with detailed information."""
-    orders = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
-    
+    orders = (
+        Order.objects.filter(user=request.user)
+        .prefetch_related('items__product')
+        .order_by('-created_at')
+    )
+
     # Add totals calculation for each order
     for order in orders:
         order.total_amount = order.total_cents / 100
         order.item_count = sum(item.quantity for item in order.items.all())
-    
+
     return render(request, 'store/order_history.html', {'orders': orders})
 
 
@@ -348,7 +360,7 @@ def order_detail(request, order_id):
     """Display detailed view of a single order."""
     order = get_object_or_404(Order, id=order_id, user=request.user)
     order.total_amount = order.total_cents / 100
-    
+
     return render(request, 'store/order_detail.html', {'order': order})
 
 

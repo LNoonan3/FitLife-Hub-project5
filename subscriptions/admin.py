@@ -5,7 +5,13 @@ from .models import Plan, Subscription
 
 @admin.register(Plan)
 class PlanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price_display', 'interval', 'is_active', 'active_subs_count')
+    list_display = (
+        'name',
+        'price_display',
+        'interval',
+        'is_active',
+        'active_subs_count',
+    )
     search_fields = ('name', 'description')
     list_filter = ('interval', 'is_active')
     list_editable = ('is_active',)
@@ -29,7 +35,15 @@ class PlanAdmin(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'plan', 'status', 'start_date', 'end_date', 'is_expired', 'stripe_sub_id')
+    list_display = (
+        'user',
+        'plan',
+        'status',
+        'start_date',
+        'end_date',
+        'is_expired',
+        'stripe_sub_id',
+    )
     list_filter = ('status', 'plan', 'start_date')
     search_fields = ('user__username', 'user__email', 'stripe_sub_id')
     readonly_fields = ('start_date', 'created_at', 'updated_at')
@@ -39,11 +53,20 @@ class SubscriptionAdmin(admin.ModelAdmin):
     def is_expired(self, obj):
         from django.utils import timezone
         if obj.status == 'canceled':
-            return format_html('<span style="color: orange;">✗ Canceled</span>')
+            return format_html(
+                '<span style="color: orange;">✗ Canceled</span>'
+            )
         elif obj.end_date and obj.end_date < timezone.now().date():
-            return format_html('<span style="color: red; font-weight: bold;">✗ Expired</span>')
+            return format_html(
+                '<span style="color: red; font-weight: bold;">✗ Expired</span>'
+            )
         elif obj.status == 'active':
-            return format_html('<span style="color: green; font-weight: bold;">✓ Active</span>')
+            return format_html(
+                (
+                    '<span style="color: green; font-weight: bold;">'
+                    '✓ Active</span>'
+                )
+            )
         return format_html('<span style="color: gray;">-</span>')
     is_expired.short_description = 'Status Check'
 
@@ -60,7 +83,11 @@ class SubscriptionAdmin(admin.ModelAdmin):
         }),
     )
 
-    actions = ['cancel_subscriptions', 'sync_with_stripe', 'fix_duplicate_active']
+    actions = [
+        'cancel_subscriptions',
+        'sync_with_stripe',
+        'fix_duplicate_active',
+    ]
 
     def cancel_subscriptions(self, request, queryset):
         import stripe
@@ -77,7 +104,11 @@ class SubscriptionAdmin(admin.ModelAdmin):
             except stripe.error.InvalidRequestError:
                 pass  # Already canceled on Stripe
             except Exception as e:
-                self.message_user(request, f"Error canceling {sub.id}: {str(e)}", level='ERROR')
+                self.message_user(
+                    request,
+                    f"Error canceling {sub.id}: {str(e)}",
+                    level='ERROR'
+                )
                 continue
 
             # Update local database
@@ -86,7 +117,10 @@ class SubscriptionAdmin(admin.ModelAdmin):
             sub.save()
             count += 1
 
-        self.message_user(request, f"{count} subscription(s) canceled successfully.")
+        self.message_user(
+            request,
+            f"{count} subscription(s) canceled successfully."
+        )
     cancel_subscriptions.short_description = "Cancel selected subscriptions"
 
     def sync_with_stripe(self, request, queryset):
@@ -125,9 +159,16 @@ class SubscriptionAdmin(admin.ModelAdmin):
                 synced += 1
             except Exception as e:
                 errors += 1
-                self.message_user(request, f"Error syncing {sub.id}: {str(e)}", level='ERROR')
+                self.message_user(
+                    request,
+                    f"Error syncing {sub.id}: {str(e)}",
+                    level='ERROR'
+                )
 
-        self.message_user(request, f"Synced {synced} subscription(s). {errors} error(s).")
+        self.message_user(
+            request,
+            f"Synced {synced} subscription(s). {errors} error(s)."
+        )
     sync_with_stripe.short_description = "Sync status with Stripe"
 
     def fix_duplicate_active(self, request, queryset):
@@ -159,5 +200,10 @@ class SubscriptionAdmin(admin.ModelAdmin):
                 old_sub.save()
                 fixed += 1
 
-        self.message_user(request, f"Fixed {fixed} duplicate active subscription(s).")
-    fix_duplicate_active.short_description = "Fix duplicate active subscriptions"
+        self.message_user(
+            request,
+            f"Fixed {fixed} duplicate active subscription(s)."
+        )
+    fix_duplicate_active.short_description = (
+        "Fix duplicate active subscriptions"
+    )

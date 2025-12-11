@@ -114,7 +114,9 @@ class CoreModelTests(TestCase):
             title="Second Update",
             content="Content 2"
         )
-        updates = ProgressUpdate.objects.filter(user=self.user).order_by('-created_at')
+        updates = ProgressUpdate.objects.filter(
+            user=self.user
+        ).order_by('-created_at')
         self.assertEqual(updates[0].id, update2.id)
         self.assertEqual(updates[1].id, update1.id)
 
@@ -400,7 +402,9 @@ class CoreViewTests(TestCase):
         url = reverse('core:progress_create')
         data = {
             'title': 'Progress with émojis & symbols! 💪',
-            'content': 'Content with "quotes" and \'apostrophes\' & special chars!'
+            'content': (
+                'Content with "quotes" and \'apostrophes\' & special chars!'
+            )
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)

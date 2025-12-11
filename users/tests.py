@@ -197,7 +197,9 @@ class UserProfileTests(TestCase):
         # Test that special characters in bio are handled correctly
         self.client.login(username='testuser', password='pass')
         url = reverse('users:profile_edit')
-        special_bio = 'Bio with émojis 💪 & symbols! "Quotes" and \'apostrophes\''
+        special_bio = (
+            'Bio with émojis 💪 & symbols! "Quotes" and \'apostrophes\''
+        )
         response = self.client.post(url, {
             'bio': special_bio,
             'fitness_goal': 'Get fit'
@@ -277,7 +279,8 @@ class UserProfileTests(TestCase):
         self.client.login(username='testuser', password='pass')
         url = reverse('users:profile')
         response = self.client.get(url)
-        # Check for common default text patterns (adjust based on your template)
+        # Check for common default text patterns
+        # (adjust based on your template)
         self.assertEqual(response.status_code, 200)
 
     def test_multiple_users_have_separate_profiles(self):
@@ -321,7 +324,12 @@ class UserProfileTests(TestCase):
         }, follow=True)
         # Check for success message in response
         messages = list(response.context['messages'])
-        self.assertTrue(any('updated' in str(m).lower() or 'success' in str(m).lower() for m in messages))
+        self.assertTrue(
+            any(
+                'updated' in str(m).lower() or 'success' in str(m).lower()
+                for m in messages
+            )
+        )
 
     def test_profile_created_at_not_modifiable(self):
         # created_at should not change after profile creation
@@ -370,7 +378,6 @@ class UserProfileTests(TestCase):
         url = reverse('users:profile')
         response = self.client.get(url)
         # Subscription could be None or not present
-        subscription = response.context.get('subscription')
         # Just verify context key exists
         self.assertIn('subscription', response.context)
 

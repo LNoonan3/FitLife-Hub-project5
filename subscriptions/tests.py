@@ -1,4 +1,3 @@
-from operator import sub
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -422,9 +421,12 @@ class SubscriptionViewTests(TestCase):
         )
         url = reverse('subscriptions:subscribe_plan', args=[self.plan.id])
         with patch('stripe.checkout.Session.create') as mock_create:
-            mock_create.return_value = MagicMock(url='http://stripe.example.com')
+            mock_create.return_value = MagicMock(
+                url='http://stripe.example.com'
+            )
             response = self.client.post(url)
-            # Should redirect to Stripe checkout (302 redirect via redirect() function)
+            # Should redirect to Stripe checkout (302 redirect via
+            # redirect() function)
             self.assertEqual(response.status_code, 302)
             # Verify it's redirecting to Stripe URL
             self.assertIn('stripe.example.com', response.url)
@@ -523,7 +525,9 @@ class SubscriptionViewTests(TestCase):
         url = reverse('subscriptions:subscription_success')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'subscriptions/subscription_success.html')
+        self.assertTemplateUsed(
+            response, 'subscriptions/subscription_success.html'
+        )
         self.assertContains(response, "successful")
 
     def test_subscription_cancel_view(self):
@@ -531,7 +535,9 @@ class SubscriptionViewTests(TestCase):
         url = reverse('subscriptions:subscription_cancel')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'subscriptions/subscription_cancel.html')
+        self.assertTemplateUsed(
+            response, 'subscriptions/subscription_cancel.html'
+        )
 
     def test_subscription_cancel_view_shows_cancellation_info(self):
         # Cancel page should inform user about cancellation
@@ -635,7 +641,9 @@ class SubscriptionViewTests(TestCase):
             start_date='2025-01-01',
             status='active'
         )
-        url = reverse('subscriptions:cancel_subscription', args=[subscription.id])
+        url = reverse(
+            'subscriptions:cancel_subscription', args=[subscription.id]
+        )
         with patch('stripe.Subscription.delete') as mock_delete:
             import stripe
             # InvalidRequestError requires message and param arguments

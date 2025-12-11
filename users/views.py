@@ -26,7 +26,8 @@ def signup_view(request):
 def profile(request):
     from datetime import date
 
-    # Get the most recent ACTIVE subscription first, then fall back to most recent
+    # Get the most recent ACTIVE subscription first,
+    # then fall back to most recent
     active_subscription = (
         Subscription.objects
         .filter(user=request.user, status='active')
@@ -49,7 +50,11 @@ def profile(request):
     ).order_by('-created_at')[:3]
 
     days_until_next_payment = None
-    if subscription and subscription.status == 'active' and subscription.next_payment_date:
+    if (
+        subscription
+        and subscription.status == 'active'
+        and subscription.next_payment_date
+    ):
         next_payment = subscription.next_payment_date
         days_until_next_payment = (next_payment - date.today()).days
 
@@ -74,7 +79,11 @@ def profile_edit(request):
     )
 
     days_until_next_payment = None
-    if subscription and subscription.next_payment_date and subscription.status == 'active':
+    if (
+        subscription
+        and subscription.next_payment_date
+        and subscription.status == 'active'
+    ):
         next_payment = subscription.next_payment_date
         days_until_next_payment = (next_payment - date.today()).days
 

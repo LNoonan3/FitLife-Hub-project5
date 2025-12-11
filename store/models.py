@@ -62,7 +62,10 @@ class OrderItem(models.Model):
         return self.unit_price * self.quantity
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name if self.product else 'Deleted Product'}"
+        return (
+            f"{self.quantity} x "
+            f"{self.product.name if self.product else 'Deleted Product'}"
+        )
 
 
 class Review(models.Model):
